@@ -8,6 +8,7 @@
 
       <header>
             <h1 class="text-center">Login</h1>
+            <h4><?php display_message(); ?></h4>
         <div class="col-sm-4 col-sm-offset-5">         
             <form class="" action="" method="post" enctype="multipart/form-data">
 
@@ -32,12 +33,11 @@
 
         </div>
 
-    </div>
+
     <!-- /.container -->
 
     <div class="container">
 
-        <hr>
-
+  
         <!-- Footer -->
  <?php include(TEMPLATE_FRONT.DS."Footer.php"); ?>

@@ -20,6 +20,14 @@
                 </div>
 
                 <div class="row">
+                    
+                    <?php 
+                    
+                        
+                       // echo $_SESSION['product_1'];
+                    
+                    ?>
+                    
                     <?php get_products(); ?>
                 </div>
 

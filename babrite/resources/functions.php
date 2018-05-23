@@ -1,5 +1,22 @@
 <?php
-
+            function set_message($msg){
+                
+                if(!empty($msg)){
+                    $_SESSION['message'] = $msg;
+                }
+                else {
+                    $msg = "";
+                }
+            }
+            
+            function display_message(){
+                
+                if(isset($_SESSION['message'])){
+                    echo $_SESSION['message'];
+                    unset($_SESSION['message']);
+                }
+                
+            }
             function redirect($location){
 
                 header("Location: $location");
@@ -52,7 +69,7 @@
         <h4><a href="item.php?id={$row['product_id']}">{$row['product_title']}</a>
         </h4>
         <p>See more snippets like this online store item at <a target="_blank" href="http://www.bootsnipp.com">Bootsnipp - http://bootsnipp.com</a>.</p>
-        <a class="btn btn-primary" target="_blank" href="item.php?id={$row['product_id']}">Buy</a>
+        <a class="btn btn-primary" target="_blank" href="cart.php?add={$row['product_id']}">Buy</a>
     </div>
    
 </div>
@@ -146,7 +163,8 @@ if(isset($_POST['submit'])){
     confirm($query);
 
     if (mysqli_num_rows($query) == 0)
-    {
+    {   
+        set_message("incorrect username or password");
         redirect("login.php");
     }    
     else {
@@ -154,8 +172,30 @@ if(isset($_POST['submit'])){
     }
 
 
-}
+    }
 
+}
+function send_message(){
+
+if(isset($_POST['submit'])){
+    
+    $to = "ainaniran@yahoo.com";
+    $from_name = $_POST['name'];
+    $subject   = $_POST['subject'];
+    $email     = $_POST['email'];
+    $message   = $_POST['message'];
+    
+    $header = " from: {$from_name}  {$email} ";
+    
+    $result = mail($to, $subject, $message, $header); 
+    
+    if(!$result){
+        set_message("YOUR MESSAGE CANNOT BE SENT");
+    }
+    else {
+        set_message("YOUR MESSAGE IS SENT");
+    }
+    }
 }
 
 /*********************back end***********************************************/
