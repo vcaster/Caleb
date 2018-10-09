@@ -1,0 +1,10 @@
+<?php ?>
+<!DOCTYPE>
+<html>
+    <head>
+        <title></title>    
+    </head>
+    <body>
+    <?php ?>
+    </body>
+</html>

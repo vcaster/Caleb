@@ -1,0 +1,60 @@
+/*
+*************************************************
+
+Harvard Alumni Affairs & Development
+Print Styles
+
+Created by the friendly folks at Happy Cog
+http://www.happycog.com/
+
+*************************************************
+*/
+
+
+body { font: 9pt/1.3 "Times New Roman", Times, Georgia, serif; color: #282827; border: none; }
+
+h1, h2, h3, h4, h5, h6 { letter-spacing: 1px; margin-top: 3pt; clear: both; margin-bottom: 0; }
+h1 a { text-decoration: none; }
+h2 { font-size: 16pt; margin-top: 10pt; }
+h3 { font-size: 14pt; }
+h4 { font-size: 12pt; }
+h5 { font-size: 9pt; }
+h6 { font-size: 9pt; }
+
+h1, h2, h3, h4, h5, h6 { page-break-after: avoid; }
+
+a { color: #666; }
+
+img { border: none; display: block; }
+
+p { margin-top: 0; line-height: 1.5; }
+
+table { margin-bottom: 20px; border-bottom: 1px solid #666; border-collapse: collapse; }
+	td { padding: 6px; border-top: 1px solid; }
+
+pre, code { vertical-align: baseline; }
+
+blockquote { margin-bottom: 30px; padding-left: 10px; border-left: 1px solid #999; page-break-inside: avoid; }
+
+li { margin-bottom: 10px; }
+
+#offcanvas-menu, ul.sm, .mobile-menu-icon, #campaign-link, .share-icons, .workbench-info-block, .edit_content_shortcuts { display: none; }
+
+/*-------------------------------------------
+    Global Combinations
+-------------------------------------------*/
+.main-nav, form, .utility-nav, .login, .header-right-mobile, .f-mag-trigger, .engage, .skip, .more, .load, .controls, .carousel-controls,  .footer ul,  .secondary, .breadcrumb, .no-print, .btn, .mid-footer .split-1-2, .alumni-search, .social-update, .read-more, .mag-dropdown .schools-list, .flex-direction-nav, #slider-nav, .tab-nav,.comment-form { display: none !important; }
+
+.main { margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid #666; }
+
+abbr { border: none; }
+
+a img { display: block; margin-bottom: 7pt; }
+
+.logo { font-size: 36px; font-style: italic; font-weight: normal; text-decoration: none; margin-bottom: 30px; display: block; }
+.logo a { text-decoration: none; }
+
+.footer .logo { font-style: normal; font-size: 20px; margin-bottom: 0; margin-top: 20px; }
+
+.element-invisible, .messages { display: none; }
+

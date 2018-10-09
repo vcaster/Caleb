@@ -1,0 +1,82 @@
+email : ^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$^
+	"^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$"
+$username = "user_name12";
+if (preg_match('/^[a-z\d_]{5,20}$/i', $username)) {
+echo "Your username is ok.";
+} else {
+echo "Wrong username format.";
+}
+
+matric
+
+[0-9]{2}\/[0-9]{4}
+
+// Wait for the DOM to be ready
+$(function() {
+  // Initialize form validation on the registration form.
+  // It has the name attribute "registration"
+  $("form[name='registration']").validate({
+    // Specify validation rules
+    rules: {
+      // The key name on the left side is the name attribute
+      // of an input field. Validation rules are defined
+      // on the right side
+      firstname: "required",
+      lastname: "required",
+      email: {
+        required: true,
+        // Specify that email should be validated
+        // by the built-in "email" rule
+        email: true
+      },
+      password: {
+        required: true,
+        minlength: 5
+      }
+    },
+    // Specify validation error messages
+    messages: {
+      firstname: "Please enter your firstname",
+      lastname: "Please enter your lastname",
+      password: {
+        required: "Please provide a password",
+        minlength: "Your password must be at least 5 characters long"
+      },
+      email: "Please enter a valid email address"
+    },
+    // Make sure the form is submitted to the destination defined
+    // in the "action" attribute of the form when valid
+    submitHandler: function(form) {
+      form.submit();
+    }
+  });
+});
+
+Censor bad words with regexp
+This function uses the power of regexp to check if some bad word are on the text, also offers the posibility to change those word for something else.
+
+function filtrado($texto, $reemplazo = false)
+{
+$filtradas = 'ding, shit';
+$f = explode(',', $filtradas);
+$f = array_map('trim', $f);
+$filtro = implode('|', $f);
+return ($reemplazo) ? preg_replace("#$filtro#i", $reemplazo, $texto) : preg_match("#$filtro#i", $texto) ;
+}
+
+IP Address Validation
+A simple method of validating an IP address using PHP and regular expressions.
+$string = "255.255.255.255";
+if (preg_match(
+'/^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:[.](?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}$/',
+$string)) {
+echo "IP address is good.";
+}
+
+$url = "http://phpzag.com/";
+if (preg_match('/^(http|https|ftp):\/\/([A-Z0-9][A-Z0-9_-]*(?:\.[A-Z0-9][A-Z0-9_-]*)+):?(\d+)?\/?/i', $url)) {
+echo "Your url is ok.";
+} else {
+echo "Wrong url.";
+}
+/(http:|ftp:|https:)\/\/+[A-Za-z0-9._?=&~`!\$\/\-\#]+\.[A-Za-z0-9._?=&~`!\$\/\-\#]*/

@@ -1,0 +1,2743 @@
+var hostname = 'onlywire.com'; 
+// hostname is set via PHP script
+// bookmarkletAjaxPageAction:Page Controller
+
+// var _bookmarklet = true;
+
+var isIE6        = "";
+var swwwurl      = "https://" + hostname;
+var wwwurl       = "https://" + hostname;
+var pubwwwurl    = "https://" + hostname;
+var sitename     = "OnlyWire";
+var sso          = "0";
+var theme        = "";
+var oldwwwurl    = "https://" + hostname;
+
+
+function getButtonSpecs()
+{
+    return{
+        size: 's',
+        type: 'r',
+        outerWidth: 85,
+        corners: 4,
+        padding: 1,
+        logoHeight: 15,
+        logoWidth: 12,
+        fontSize: 12,
+        lineHeight: 12,
+        mouseover: 't',
+        showads: 't',
+        logo: 'F26722',
+        text: '000000',
+        background: 'FFFFFF',
+        border: 'CCCCCC',
+        fontFamily: 'Arial, Helvetica, sans-serif',
+        logox: 'F26722',
+        textx: '000000',
+        backgroundx: 'F9F9F9',
+        links: '0000FF',
+        active: 'FFFFFF',
+        activebg: 'F26722',
+        inactive: 'FFFFFF',
+        inactivebg: 'CCCCCC',
+        services: []};
+}
+
+if (typeof _ow == 'undefined') {
+
+    _ow = {};
+    _ow.btn = getButtonSpecs();
+    _ow.ie6 = (isIE6.length > 0);
+    _ow.wwwurl = swwwurl;
+    _ow.adurl = wwwurl;
+    _ow.sitename = sitename;
+    _ow.imagesPath = wwwurl;
+    _ow.token = null; // safari fix
+
+    _ow.E = function(tagName) {
+        return document.createElement(tagName);
+    };
+
+    _ow.T = function(text) {
+        return document.createTextNode(text);
+    };
+
+    _ow.H = function(htmlString) {
+        var temp = document.createElement("span");
+        temp.innerHTML = htmlString;
+
+        // return the element inside the span, which is what we want
+        return temp.children[0];
+    };
+
+    _ow.isArray = function(array) {
+        return !(
+                !array ||
+                (!array.length || array.length == 0) ||
+                typeof array !== 'object' ||
+                !array.constructor ||
+                array.nodeType ||
+                array.item
+                );
+    };
+
+    if (!document.getElementById('ow_css_tag')) {
+
+        var documentHeadArray = document.getElementsByTagName('head');
+
+        if (documentHeadArray[0])
+        {
+            var documentHead = documentHeadArray[0];
+            var cssTag = null;
+            var scriptTag = null;
+
+            if (document.createElementNS && documentHead.tagName == 'head')
+            {
+                cssTag = documentHead.appendChild(document.createElementNS('http://www.w3.org/1999/xhtml', 'link'));
+
+                if (_ow.ie6)
+                {
+                    scriptTag = documentHead.appendChild(document.createElementNS('http://www.w3.org/1999/xhtml', 'script'));
+                }
+            }
+            else
+            {
+                cssTag = documentHead.appendChild(document.createElement('link'));
+
+                if (_ow.ie6)
+                {
+                    scriptTag = documentHead.appendChild(document.createElement('script'));
+                }
+            }
+
+            cssTag.id = 'ow_css_tag';
+            cssTag.rel = 'stylesheet';
+            cssTag.href = oldwwwurl + '/css/btn/button_' + _ow.btn.size + '.css';
+            cssTag.type = 'text/css';
+
+        }
+    }
+
+    _ow.DOMready = (function() {
+        var _this = {};
+        _this.isReady = false;
+
+        _this.init = function(fn) {
+
+            if (!this.isReady)
+            {
+                this.bindReady(fn);
+            }
+            else
+            {
+                fn();
+            }
+        };
+
+        _this.bindReady = function(fn) {
+            if (document.addEventListener)
+            {
+                document.addEventListener("DOMContentLoaded", function() {
+                    _this.isReady = true;
+                    _this.init(fn);
+                }, false);
+
+            }
+            else if (document.attachEvent)
+            {
+                // IE
+                document.attachEvent("onreadystatechange", function() {
+                    if (document.readyState === "complete")
+                    {
+                        _this.isReady = true;
+                        _this.init(fn);
+                    }
+                });
+            }
+        };
+
+        return _this;
+    })();
+
+    _ow.getScript = function(url, jCallback, callback) {
+
+        this.url = url;
+        this.seperator = (url.match(/\?/)) ? "&" : "?";
+        this.jsonpCallback = "jsonp" + (new Date()).getTime();
+        this.jsonp = "jsonp=" + this.jsonpCallback;
+        this.cache = "_=" + (new Date()).getTime();
+
+        this.callback = callback || function() {
+        };
+
+        window[ this.jsonpCallback ] = function(data) {
+            jCallback(data);
+        };
+
+        var _this = this;
+
+        // add script tag to the DOM only when the DOM is ready
+        _ow.DOMready.init(function() {
+            _this.makeScriptTag();
+        });
+
+        // if it's called from a bookmarklet, we need to run this directly
+        if (typeof(_bookmarklet) != "undefined")
+        {
+            _this.makeScriptTag();
+
+        }
+
+    };
+
+    _ow.getScript.prototype = {
+        makeScriptTag: function() {
+
+            var head = document.getElementsByTagName("head")[0];
+            var script = document.createElement("script");
+
+            script.setAttribute("type", "text/javascript");
+
+            script.src = this.url + this.seperator + this.jsonp + "&" + this.cache;
+
+            var done = false;
+            var that = this;
+
+            script.onload = script.onreadystatechange = function() {
+
+                if (!done && (!this.readyState || this.readyState == "loaded" || this.readyState == "complete"))
+                {
+                    done = true;
+                    that.callback();
+                    head.removeChild(script);
+                }
+            }
+
+            head.appendChild(script);
+
+        }
+    };
+
+    _ow.focusTo = function(obj, selectFrom) {
+
+        if (typeof selectFrom == 'undefined')
+            selectFrom = obj.value.length;
+
+        if (obj.createTextRange)
+        {
+            if (range == 0)
+            {
+                range = obj.createTextRange();
+            }
+
+            range.moveEnd("character", obj.value.length)
+            range.moveStart("character", selectFrom)
+
+            setTimeout('range.select()', 10)
+
+        }
+        else if (obj.setSelectionRange)
+        {
+            obj.select()
+            obj.setSelectionRange(selectFrom, obj.value.length)
+        }
+        else
+        {
+            obj.blur()
+        }
+    };
+
+    _ow.class_select = function(tag) {
+        var ctag = document.getElementById('tag_' + tag);
+        ctag.style.cursor = "pointer";
+        ctag.style.color = "#000";
+        ctag.style.textDecoration = "none";
+        ctag.className = 'tag_selected';
+    };
+
+    _ow.class_deselect = function(tag) {
+        var ctag = document.getElementById('tag_' + tag);
+        ctag.style.color = "#666666";
+        ctag.style.textDecoration = "underline";
+        ctag.style.cursor = "pointer";
+        ctag.className = 'tag_deselected';
+    };
+
+    _ow.swap = function(tag) {
+        var mytags = _ow.Popup.fieldsToUpdate["tags"].value;
+        var mytags_trim = mytags.replace(/^\s+|\s+$/g, '');
+
+        var tagArray = mytags_trim.split(' '), present = false, t, tl = tag.toLowerCase()
+        if (tagArray[0].replace(/^\s+|\s+$/g, '') == '')
+            tagArray.splice(0, 1);
+        for (t = 0; t < tagArray.length; t++) {
+            if (tagArray[t].toLowerCase() == tl) {
+                tagArray.splice(t, 1);
+                _ow.class_deselect(tag);
+                present = true;
+                t -= 1;
+            }
+        }
+        if (!present) {
+            tagArray.push(tag);
+            _ow.class_select(tag);
+        }
+        var content = tagArray.join(' ');
+
+        _ow.Popup.fieldsToUpdate["tags"].value = (content.length > 1) ? content + ' ' : content;
+
+        //_ow.focusTo(_ow.Popup.fieldsToUpdate["tags"]);
+    };
+
+    _ow.getTopLeft = function(elem) {
+        // function for scroll
+        function getScrollXY() {
+            var scrOfX = 0, scrOfY = 0;
+            if (typeof(window.pageYOffset) == 'number') {
+                //Netscape compliant
+                scrOfY = window.pageYOffset;
+                scrOfX = window.pageXOffset;
+            } else if (document.body && (document.body.scrollLeft || document.body.scrollTop)) {
+                //DOM compliant
+                scrOfY = document.body.scrollTop;
+                scrOfX = document.body.scrollLeft;
+            } else if (document.documentElement && (document.documentElement.scrollLeft || document.documentElement.scrollTop)) {
+                //IE6 standards compliant mode
+                scrOfY = document.documentElement.scrollTop;
+                scrOfX = document.documentElement.scrollLeft;
+            }
+            return [scrOfX, scrOfY];
+        }
+
+        function getWindowSize() {
+            var myWidth = 0, myHeight = 0;
+            if (typeof(window.innerWidth) == 'number') {
+                //Non-IE
+                myWidth = window.innerWidth;
+                myHeight = window.innerHeight;
+            } else if (document.documentElement && (document.documentElement.clientWidth || document.documentElement.clientHeight)) {
+                //IE 6+ in 'standards compliant mode'
+                myWidth = document.documentElement.clientWidth;
+                myHeight = document.documentElement.clientHeight;
+            } else if (document.body && (document.body.clientWidth || document.body.clientHeight)) {
+                //IE 4 compatible
+                myWidth = document.body.clientWidth;
+                myHeight = document.body.clientHeight;
+            }
+            return [myWidth, myHeight];
+        }
+
+        var curleft = curtop = 0;
+        var elHeight = elem.clientHeight;
+        var elWidth = elem.clientWidth;
+
+        if (elem.offsetParent) {
+            do {
+                curleft += elem.offsetLeft;
+                curtop += elem.offsetTop;
+            } while (elem = elem.offsetParent);
+        }
+
+        var offsetTop = curtop;
+        var offsetLeft = curleft;
+        var height = elHeight + offsetTop;
+
+
+        var windowSize = getWindowSize();
+        var windowWidth = windowSize[0];
+        var windowHeight = windowSize[1];
+        /* if offsetLeft is bigger than the 'half' of the window.innerWidth;
+         * decrease the offsetLeft
+         */
+        if (offsetLeft > windowWidth / 2) {
+            offsetLeft = offsetLeft - _ow.Popup.popupWidth + elWidth;
+        }
+
+        var getScroll = getScrollXY();
+        var scrollMarginTop = offsetTop - getScroll[1];
+        // the only time we need to show the popup on the top
+        // is when the offsetTop is bigger than halph the windowHeight
+        // BUT also, if there's enough space to show the popupHeight
+        var popupHeight = _ow.Popup.popup.clientHeight || _ow.Popup.getClientHeight();
+        if (scrollMarginTop > windowHeight / 2
+                &&
+                (offsetTop > popupHeight)) {
+            height = offsetTop - popupHeight;
+        }
+        return [height, offsetLeft];
+    };
+
+    _ow.Dom = (function() {
+        function clearChildren(nod) {
+            while (nod.hasChildNodes()) {
+                nod.removeChild(nod.firstChild);
+            }
+            return nod;
+        }
+
+        function getElementById(id) {
+            var f;
+
+            return document.getElementById(id)
+                    || (f = document.getElementsByName(id) && f[0]);
+        }
+
+        getElementById.clearChildren = clearChildren;
+
+        return getElementById;
+    })();
+
+    _ow.Event = {
+        stop: function(e) {
+            if (!e)
+                var e = window.event;
+            e.cancelBubble = true;
+            if (e.preventDefault) {
+                e.preventDefault();
+            } else {
+                e.returnValue = false;
+            }
+            if (e.stopPropagation)
+                e.stopPropagation();
+        }
+        , stopPropagation: function(e) {
+            if (!e)
+                var e = window.event;
+            e.cancelBubble = true;
+            if (e.stopPropagation)
+                e.stopPropagation();
+        }
+    };
+
+    _ow.Box = function(val) {
+
+        var success = function() {
+
+            _ow.Dom.clearChildren(_ow.Popup.popup); // clear the popup
+            var divCont = _ow.E("div");
+            divCont.appendChild(_ow.Template.genHeader(2));
+            divCont.appendChild(_ow.Template.genLogo());
+
+            var clearDiv1 = document.createElement("div");
+            clearDiv1.style.clear = "both";
+            clearDiv1.style.height = "0px";
+
+            divCont.appendChild(clearDiv1);
+
+            var div = document.createElement("div");
+            div.className = "success";
+            div.style.position = "relative";
+            div.style.background = "url(\"" + pubwwwurl + "/img/bookmarklet/images/success.png\") no-repeat";
+            div.style.width = "372px";
+            div.style.height = "40px";
+            div.style.margin = "25px 0 0";
+            var span = document.createElement("span");
+            span.style.color = "#65666a";
+            span.style.position = "absolute";
+            span.style.top = "13px";
+            span.style.left = "55px";
+            span.style.fontSize = "11px";
+            span.style.fontWeight = "bold";
+            if (typeof val == "string") {
+                var textNode = document.createTextNode(val);
+                span.appendChild(textNode);
+            } else {
+                span.appendChild(val);
+            }
+
+            div.appendChild(span);
+
+            divCont.appendChild(div);
+
+            var clearDiv2 = document.createElement("div");
+            clearDiv2.style.clear = "both";
+            clearDiv2.style.height = "0px";
+
+            divCont.appendChild(clearDiv2);
+
+            _ow.Popup.popup.appendChild(divCont);
+            _ow.Popup.align(_ow.Popup.currentButton);
+        };
+
+        return {
+            success: success
+        };
+    };
+
+    _ow.Auth = (function() {
+
+        var pub = {};
+        pub.authData = null;
+
+        pub.init = function() {
+
+            var params = "url=" + encodeURIComponent(document.domain);
+
+            if (_ow.token)
+            {
+                params += "&token=" + encodeURIComponent(_ow.token);
+            }
+
+            new _ow.getScript(swwwurl + "/widget/data?" + params, function(data) {
+
+                pub.authData = data;
+
+                _ow.Template.init();
+                _ow.Popup.init();
+
+            });
+        };
+
+        if (typeof(_bookmarklet) != 'undefined') {
+
+            pub.init();
+        }
+
+        // important IE6 fix
+        if (window.addEventListener)
+        {
+            pub.init();
+        }
+        else
+        {
+            window.attachEvent("onload", function() {
+                pub.init();
+            });
+        }
+
+        pub.isLoggedIn = function() {
+            if (pub.authData.error)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        };
+        pub.logout = function() {
+            new _ow.getScript(wwwurl + '/widget/logout.php', function() {
+            }, function() {
+                _ow.Auth.init();
+            });
+        };
+        return pub;
+    })();
+
+    _ow.Submit = function(obj, url) {
+        this.obj = obj; // obj of elements
+    };
+
+    _ow.Submit.prototype._analCheck = function(el) {
+
+        if (el.nodeName == "INPUT")
+        {
+            if (el.checked)
+            {
+                return el.value;
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        var string = "";
+        var count = 0;
+
+        for (var i = 0; i < el.length; i++)
+        {
+            if (el[i].checked)
+            {
+                if (count > 0)
+                    string += ",";
+
+                string += encodeURIComponent(el[i].value);
+                count++;
+            }
+        }
+        return string;
+    };
+    _ow.Submit.prototype.form2obj = function(theForm) {
+
+        var rv = {};
+
+        if (typeof(theForm) == 'string')
+        {
+            theForm = document.getElementById(theForm);
+        }
+
+        if (theForm)
+        {
+            for (var i = 0; i < theForm.elements.length; i++)
+            {
+                var el = theForm.elements[i];
+                if (el.name)
+                {
+                    var pushValue = undefined;
+                    if (
+                            (el.tagName.toUpperCase() == 'INPUT'
+                                    && el.type.match(/^text|hidden|password$/i))
+                            || el.tagName.toUpperCase() == 'TEXTAREA'
+                            || (el.type.match(/^CHECKBOX|RADIO$/i) && el.checked)
+                            ) {
+                        pushValue = el.value.length > 0 ? el.value : undefined;
+                    }
+                    else if (el.tagName.toUpperCase() == 'SELECT') {
+                        if (el.multiple) {
+                            var pushValue = [];
+                            for (var j = 0; j < el.options.length; j++)
+                                if (el.options[j].selected)
+                                    pushValue.push(el.options[j].value);
+                            if (pushValue.length == 0)
+                                pushValue = undefined;
+                        } else {
+                            pushValue = el.options[el.selectedIndex].value;
+                        }
+                    }
+                    if (pushValue != undefined) {
+                        if (rv.hasOwnProperty(el.name))
+                            if (rv[el.name] instanceof Array) {
+                                rv[el.name] = rv[el.name].concat(pushValue);
+                            }
+                            else {
+                                rv[el.name] = [].concat(rv[el.name], pushValue);
+                            }
+                        else {
+                            rv[el.name] = el.value;
+                        }
+                    }
+                }
+            }
+        }
+        return rv;
+    };
+    _ow.Submit.prototype.obj2query = function(obj, forPHP, parentObject) {
+        if (typeof obj != 'object')
+            return '';
+
+        if (arguments.length == 1)
+            forPHP = /\.php$/.test(document.location.href);
+
+        var rv = '';
+        for (var prop in obj)
+            if (obj.hasOwnProperty(prop)) {
+
+                var qname = parentObject
+                        ? parentObject + '.' + prop
+                        : prop;
+
+                // Expand Arrays
+                if (obj[prop] instanceof Array)
+                    for (var i = 0; i < obj[prop].length; i++)
+                        if (typeof obj[prop][i] == 'object')
+                            rv += '&' + obj2query(obj[prop][i], forPHP, qname);
+                        else
+                            rv += '&' + encodeURIComponent(qname) + (forPHP ? '[]' : '')
+                                    + '=' + encodeURIComponent(obj[prop][i]);
+
+                // Expand Dates
+                else if (obj[prop] instanceof Date)
+                    rv += '&' + encodeURIComponent(qname) + '=' + obj[prop].getTime();
+
+                // Expand Objects
+                else if (obj[prop] instanceof Object)
+                    // If they're String() or Number() etc
+                    if (obj.toString && obj.toString !== Object.prototype.toString)
+                        rv += '&' + encodeURIComponent(qname) + '=' + encodeURIComponent(obj[prop].toString());
+                    // Otherwise, we want the raw properties
+                    else
+                        rv += '&' + obj2query(obj[prop], forPHP, qname);
+
+                // Output non-object
+                else
+                    rv += '&' + encodeURIComponent(qname) + '=' + encodeURIComponent(obj[prop]);
+
+            }
+        return rv.replace(/^&/, '');
+    };
+
+    _ow.Submit.prototype.bookmark = function(bookList) {
+        var self = this;
+        var services = this._analCheck(bookList);
+        var servicesLength = services.split(",").length;
+
+        if (this.obj.tags.value == "comma separated" || this.obj.tags.value == "")
+        {
+            this.obj.tags.value = "" + this.obj.title.value + "";
+        }
+
+        if (this.obj.url.value == "")
+        {
+            alert("URL field cant be blank");
+            return;
+        }
+
+        if (this.obj.cal.value != "" && this.obj.cal.value != 'null') {
+            var vars = this.obj.cal.value.split(' ');
+            var vdates = vars[0].split('-');
+            var vyr = vdates[2];
+            var vday = vdates[1];
+            var vmon = vdates[0] - 1;
+            var vtimes = vars[1].split(':');
+            var vhr = vtimes[0];
+            var vmin = vtimes[1].substr(0, 2);
+            var ampm = vars[1].substring(5);
+            if (ampm == "PM" && vhr < 12) {
+                vhr = parseInt(vhr) + 12;
+            }
+            if (ampm == "AM" && vhr >= 12) {
+                vhr = parseInt(vhr) - 12;
+            }
+            var d = new Date(vyr, vmon, vday, vhr, vmin);
+            //calculate timezone
+            var rightNow = new Date();
+
+            var minnow = rightNow.getTime();//rightNow.getHours()*60 + rightNow.getMinutes();
+            var mind = d.getTime();//d.getHours()*60 + d.getMinutes();
+
+            if (minnow > mind) {
+                alert("Selected time should be current or in the future");
+                return;
+            }
+            ;
+
+            var date1 = new Date(rightNow.getFullYear(), 0, 1, 0, 0, 0, 0);
+            var date2 = new Date(rightNow.getFullYear(), 6, 1, 0, 0, 0, 0);
+            var temp = date1.toGMTString();
+            var date3 = new Date(temp.substring(0, temp.lastIndexOf(" ")));
+            var temp = date2.toGMTString();
+            var date4 = new Date(temp.substring(0, temp.lastIndexOf(" ")));
+            var hoursDiffStdTime = (date1 - date3) / (1000 * 60 * 60);
+            var hoursDiffDaylightTime = (date2 - date4) / (1000 * 60 * 60);
+            var stdTime;
+            if (hoursDiffDaylightTime == hoursDiffStdTime) {
+                stdTime = hoursDiffStdTime;//"Time zone is GMT " + hoursDiffStdTime + ".\nDaylight Saving Time is NOT observed here.");
+            } else {
+                stdTime = hoursDiffStdTime;//"Time zone is GMT " + hoursDiffStdTime + ".\nDaylight Saving Time is observed here.");
+            }
+
+            //calculate timestamp
+            var calvalue = (d.toGMTString());
+        }
+        else if (this.obj.cal.value == "null" || this.obj.cal.value == "") {
+            var calvalue = "";
+            var stdTime = "";
+        }
+
+        var shortener = 0;
+
+        var url = swwwurl + '/widget/save?title=' + encodeURIComponent(this.obj.title.value) +
+                '&url=' + encodeURIComponent(this.obj.url.value) +
+                '&shortener=' + shortener +
+                '&tags=' + this.obj.tags.value +
+                '&cal=' + calvalue +
+                '&std=' + stdTime +
+                '&c=' + encodeURIComponent(this.obj.notes.value) +
+                '&ent_userid=' +
+                _ow.Auth.authData.ent_userid +
+                '&cat=0' +
+                '&service=' + encodeURIComponent(services) +
+                '&token=' + (_ow.token ? encodeURIComponent(_ow.token) : '');
+
+        console.log(url);
+
+        new _ow.getScript(url, function() {
+
+            var span = _ow.E("span");
+
+            if (_ow.Auth.authData.user_suspended == 'true')
+            {
+                span.appendChild(_ow.H('<span>Your request cannot be processed at this time. Your account has been suspended</span>'));
+            }
+            else
+            {
+                span.appendChild(_ow.H('<span>Your submission will be processed soon.</span>'));
+            }
+
+            span.style.display = "block";
+            span.style.marginLeft = "-4px";
+            span.style.marginTop = "-5px";
+            _ow.Box(span).success();
+
+        });
+    };
+    _ow.Submit.prototype.status = function() {
+        var elems = this.form2obj(this.obj);
+
+        if (!elems.status) {
+            alert('Please enter a status.');
+            return;
+        }
+        if (!elems['service[]']) {
+            alert('Please select at least 1 service.');
+            return;
+        }
+
+        // the service wants a services variable with a comma separated name of services
+        // check wether elems['service[]'] is an array
+        var services = elems['service[]'];
+        if (_ow.isArray(services))
+            services = services.map(encodeURIComponent).join(',');
+
+        var ent_user = _ow.Auth.authData.ent_userid;
+        var query = this.obj2query({
+            services: services,
+            status: elems.status,
+            ent_userid: ent_user
+        });
+
+        var url = swwwurl + '/widget/updatestatus?' + query;
+
+        new _ow.getScript(url, function() {
+        }, function() {
+            var span = _ow.E("span");
+
+            if (_ow.Auth.authData.user_suspended == 'true')
+            {
+                span.appendChild(_ow.H('<span>Your request cannot be processed. Your account has been suspended.</span>'));
+
+            }
+            else
+            {
+                span.appendChild(_ow.H('<span>Your submission will be processed soon.</span>'));
+            }
+            span.style.display = "block";
+            span.style.marginLeft = "-4px";
+            span.style.marginTop = "-5px";
+            _ow.Box(span).success();
+
+        });
+    };
+    _ow.Submit.prototype.mylogins = function() {
+        // clear all inputs with username and password
+        var inputs = this.obj.getElementsByTagName("input");
+        for (var i = 0; i < inputs.length; i++) {
+            if (inputs[i].value == 'username' ||
+                    inputs[i].value == 'password') {
+                inputs[i].value = '';
+            }
+        }
+        var elems = this.form2obj(this.obj);
+        var query = this.obj2query(elems);
+        if (!query) {
+            alert('Please enter your login info.');
+            return;
+        }
+
+        var username = _ow.Auth.authData.username;
+
+        var url = wwwurl + '/widget/save_services?do=update_bookmark_logins&u=' + username + '&' + query;
+
+        new _ow.getScript(url, function() {
+        });
+
+        var span = _ow.E("span");
+
+        span.appendChild(_ow.T('Your login information has been saved'));
+
+        span.style.display = "block";
+        span.style.marginLeft = "-4px";
+        span.style.marginTop = "-5px";
+        _ow.Box(span).success();
+
+        // run the login after 3 seconds
+        // just to be sure the services have been updated
+        setTimeout(function() {
+            _ow.Auth.init();
+        }, 3000);
+    };
+    _ow.Submit.prototype.share = function() {
+        var self = this;
+        /* get title/url from url*/
+        var title = encodeURIComponent(_ow.Popup.fieldsToUpdate.title.value);
+        var url = encodeURIComponent(_ow.Popup.fieldsToUpdate.url.value);
+        /* validation */
+        if (this.obj.from.value == "")
+        {
+            alert("From email cant be blank");
+            return;
+        } else
+        {
+            var validRegExp = /^[^@]+@[^@]+.[a-z]{2,}$/i;
+
+            if (this.obj.from.value.search(validRegExp) == -1)
+            {
+                alert("Invalid e-mail address");
+                return;
+            }
+        }
+
+        if (this.obj.to.value == "comma separated" || this.obj.to.value == "")
+        {
+            alert("To email cant be blank");
+            return;
+        }
+
+        var numEmails = this.obj.to.value.split(",").length;
+
+        new _ow.getScript(wwwurl + '/widget/send/email?from=' +
+                encodeURIComponent(this.obj.from.value) +
+                '&to=' + encodeURIComponent(this.obj.to.value) +
+                '&message=' + encodeURIComponent(this.obj.message.value) +
+                '&title=' + title +
+                '&url=' + url, function(data) {
+
+            _ow.Box("Your email has been sent.").success();
+
+        });
+    };
+    _ow.Submit.prototype.signup = function() {
+        var self = this;
+        new _ow.getScript(wwwurl + '/widget/signup?subscription=free&cardnumber=&cvv=&mm=-1&yy=-1&zip=&cardname=&cardtype=&firstname=' + this.obj.firstname.value + '&lastname=' + this.obj.lastname.value + '&username=' + this.obj.username.value + '&email=' + this.obj.email.value + '&m=' + this.obj.password.value + '&captcha_code=' + this.obj.captcha_code.value + '&industry=Button', function(data) {
+            if (data == "Success")
+            {
+                _ow.Box("Your account has been created, please login.").success();
+                _ow.Popup.loadSignin();
+            }
+            else
+            {
+                alert(data);
+            }
+        });
+    };
+
+    _ow.Submit.prototype.signin = function(obj) {
+        var self = this;
+        if (obj)
+            this.obj = obj;
+        new _ow.getScript(swwwurl + '/widget/login?username=' + this.obj.username.value + '&m=' + this.obj.password.value, function(data) {
+            if (data.response == "Success") {
+                _ow.token = data.token;
+                _ow.Auth.init();
+            } else {
+                alert(data.response);
+            }
+        });
+    };
+
+    _ow.Template = (function() {
+
+        var pub = {};
+
+        pub.homepage = null;
+        pub.bookmark = null;
+        pub.share = null;
+
+        pub.init = function() {
+
+            pub.myloginspage = pub.genMyLoginsPage();
+            pub.homepage = pub.genHomepage();
+            pub.bookmark = pub.genBookmark();
+            pub.share = pub.genShare();
+
+            pub.signin = pub.genSignin();
+            pub.status = pub.genStatus();
+            pub.tags = pub.genTags();
+
+            //add other stuff for each page
+        };
+
+        pub.genTitle = function(text) {
+
+            var div = document.createElement("div");
+            div.style.height = "22px";
+            div.style.color = "#" + _ow.btn.textx;
+            div.style.fontSize = "13px";
+            div.style.fontWeight = "bold";
+            div.style.padding = "18px 0 0 0px";
+            div.appendChild(document.createTextNode(text));
+
+            return div;
+        };
+
+        pub.genRound = function(text, linkText, url) {
+
+            var div = document.createElement("div");
+            div.style.position = "relative";
+            div.style.height = "21px";
+            div.style.width = "394px";
+            div.style.background = "url(\"" + pubwwwurl + "/img/bookmarklet/images/round.png\") no-repeat top left";
+            div.style.fontSize = "10px";
+            div.style.marginBottom = "10px";
+            div.style.marginLeft = "6px";
+
+            var inDiv = document.createElement("div");
+            inDiv.style.position = "absolute";
+            inDiv.style.left = "10px";
+            inDiv.style.top = "3px";
+            inDiv.appendChild(document.createTextNode(text));
+
+            if (linkText)
+            {
+                var a = document.createElement("a");
+                a.style.position = "absolute";
+                a.style.top = "3px";
+                a.style.right = "10px";
+                a.style.color = "#666666";
+                a.href = "#";
+
+                a.onclick = function() {
+                    _ow.Popup.loadMyLoginsPage();
+                    return false;
+                }
+
+                a.appendChild(document.createTextNode(linkText));
+
+                div.appendChild(a);
+            }
+
+            div.appendChild(inDiv);
+
+            return div;
+        };
+
+        pub.genHeader = function(num) {
+
+            var ul = document.createElement("ul");
+            ul.style.padding = "6px 0";
+            ul.style.margin = "19px 0 0";
+            ul.style.borderBottom = "1px solid #ccc";
+            ul.style.width = "358px";
+            ul.style.top = "19px";
+            ul.style.left = "9px";
+
+            var numLi = 4;
+
+            for (var i = 0, li, a; i < numLi; i++)
+            {
+
+                if (i != 1)
+                {
+                    li = document.createElement("li");
+                    li.style.display = "inline";
+                    li.style.listStyle = "none";
+                    li.style.padding = "0px";
+                    li.style.margin = "6px 10px 0 0";
+                    li.style.cursor = "pointer";
+
+                    a = document.createElement("a");
+                    a.style.padding = "7px 7px";
+                    a.style.margin = "0";
+                    a.style.border = "1px solid #ccc";
+                    a.style.borderBottom = "none";
+                    a.style.backgroundColor = "#" + _ow.btn.inactivebg;
+                    a.style.textDecoration = "none";
+                    a.style.outline = "none";
+                    a.style.color = "#" + _ow.btn.inactive;
+                    a.style.fontWeight = "bold";
+                    a.style.lineHeight = "16px";
+                }
+
+                if (i == 0)
+                {
+                    if (_ow.Auth.isLoggedIn())
+                    {
+                        a.onclick = function(e) {
+                            _ow.Event.stop(e);
+                            _ow.Popup.loadBookmark();
+                            //new OWBookmark();
+                        }
+                    }
+                    else
+                    {
+                        a.onclick = function(e) {
+                            _ow.Event.stop(e);
+                            _ow.Popup.loadHomepage();
+                            //new OWHome();
+                        }
+                    }
+                    a.appendChild(document.createTextNode("Bookmark"));
+
+                }
+                else if (i == 2)
+                {
+                    a.onclick = function(e) {
+
+                        _ow.Event.stop(e);
+
+                        if (_ow.Auth.isLoggedIn())
+                        {
+                            _ow.Popup.loadShare();
+                        }
+                        else
+                        {
+                            _ow.Popup.loadSignin();
+                        }
+                    }
+
+                    a.appendChild(document.createTextNode("Email"));
+                }
+                else if (i == 3)
+                {
+                    a.target = "_blank";
+
+                    if (_ow.Auth.isLoggedIn())
+                    {
+                        a.href = wwwurl + '/secure/my/account';
+                        a.appendChild(document.createTextNode("My Account"));
+                    }
+                    else
+                    {
+                        a.href = wwwurl;
+                        a.appendChild(document.createTextNode("What's This?"));
+                    }
+                }
+                if (num == i)
+                {
+                    a.style.backgroundColor = "#" + _ow.btn.activebg;
+                    a.style.color = "#" + _ow.btn.active;
+                }
+                li.appendChild(a);
+                ul.appendChild(li);
+            }
+
+            var closeLink = _ow.H('<a style="color:#' + _ow.btn.active + ';text-decoration:none;width:14px;height:14px;display:block;position: absolute;top:0;right:0;" href="#"><div style="position:absolute;left:3px; top:0px;"><img src="' + pubwwwurl + '/img/bookmarklet/images/ismall-close.png" alt=""></div></a>');
+
+            closeLink.onclick = function(e) {
+
+                _ow.Event.stop(e);
+                _ow.Popup.hide();
+
+            };
+
+            ul.appendChild(closeLink);
+
+            if (_ow.Auth.isLoggedIn())
+            {
+                // logout
+                var logoutCont = _ow.H('<div style="color:#666666;position: absolute;top:0;right:27px;"></div>');
+
+                if (_ow.Auth.authData.entUsers == 0)
+                {
+                    logoutCont.appendChild(_ow.T(_ow.Auth.authData.username));
+                }
+                else
+                {
+
+                    var entUsrs = _ow.Auth.authData.entUsers;
+
+                    var html = document.createElement('select');
+
+                    html.style.fontSize = "11px";
+                    html.setAttribute('id', 'entSelect');
+
+                    for (var k = 0; k < entUsrs.length; k++)
+                    {
+                        if (_ow.Auth.authData.ent_userid == 0)
+                        {
+                            if (entUsrs[k].username == _ow.Auth.authData.username)
+                            {
+                                var opt = document.createElement('option');
+                                opt.setAttribute('value', entUsrs[k].pk_id);
+                                opt.setAttribute('selected', 'selected');
+                                opt.appendChild(document.createTextNode(entUsrs[k].username + ' (' + entUsrs[k].last_name + ', ' + entUsrs[k].first_name + ')'));
+                                html.appendChild(opt);
+                            }
+                            else
+                            {
+                                var opt = document.createElement('option');
+                                opt.setAttribute('value', entUsrs[k].pk_id);
+                                opt.appendChild(document.createTextNode(entUsrs[k].username + ' (' + entUsrs[k].last_name + ', ' + entUsrs[k].first_name + ')'));
+                                html.appendChild(opt);
+
+                            }
+                        }
+                        else
+                        {
+                            if (entUsrs[k].pk_id == _ow.Auth.authData.ent_userid)
+                            {
+                                var opt = document.createElement('option');
+                                opt.setAttribute('value', entUsrs[k].pk_id);
+                                opt.setAttribute('selected', 'selected');
+                                opt.appendChild(document.createTextNode(entUsrs[k].username + ' (' + entUsrs[k].last_name + ', ' + entUsrs[k].first_name + ')'));
+                                html.appendChild(opt);
+                            }
+                            else
+                            {
+                                var opt = document.createElement('option');
+                                opt.setAttribute('value', entUsrs[k].pk_id);
+                                opt.appendChild(document.createTextNode(entUsrs[k].username + ' (' + entUsrs[k].last_name + ', ' + entUsrs[k].first_name + ')'));
+                                html.appendChild(opt);
+                            }
+                        }
+                    }
+
+                    html.onchange = function(e) {
+                        var entId = this.options[this.selectedIndex].value;
+                        var params = "url=" + encodeURIComponent(document.domain) + "&entId=" + entId;
+
+                        if (_ow.token)
+                        {
+                            params += "&token=" + encodeURIComponent(_ow.token);
+                        }
+
+                        new _ow.getScript(wwwurl + "/widget/data?" + params, function(data) {
+
+                            _ow.Auth.authData = data;
+
+                            if (_ow.Auth.authData.services)
+                            {
+                                _ow.Template.init();
+                                _ow.Popup.init();
+                            }
+                            else
+                            {
+                                var span = _ow.E("span");
+
+                                span.appendChild(_ow.T('The user selected has no services set up.'));
+
+                                span.style.display = "block";
+                                span.style.marginLeft = "-4px";
+                                span.style.marginTop = "-5px";
+                                _ow.Box(span).success();
+
+                                for (var x = 0; x < html.length; x++) {
+                                    if (html.options[x].value == _ow.Auth.authData.uid) { //alert(_ow.Auth.authData.uid);
+                                        html.options[x].selected = true;
+                                    }
+                                }
+                            }
+                        });
+
+                    };
+                    logoutCont.appendChild(html);
+                }
+
+                var logout = _ow.H('<a style="color:#666666;" href="#">logout</a>');
+
+                logout.onclick = function(e) {
+                    _ow.Event.stop(e);
+                    _ow.Auth.logout();
+                };
+                //logoutCont.appendChild(logout);
+                ul.appendChild(logoutCont);
+            }
+
+            return ul;
+        };
+
+        pub.genLogo = function() {
+
+            var div = document.createElement("div");
+
+            div.className = "ow_rounded_logo";
+
+            if (theme != "")
+            {
+                div.style.width = "50px";
+            }
+            else
+            {
+                div.style.width = "60px";
+            }
+
+            div.style.height = "50px";
+            div.style.position = "absolute";
+            div.style.top = "19px";
+            div.style.right = "9px";
+            div.style.right = "9px";
+            div.style.padding = "3px";
+
+            if (_ow.ie6)
+            {
+                div.style.background = "#" + _ow.btn.logox + " url(\"" + pubwwwurl + "/img/bookmarklet/images/onlywire_logo_small_square.gif\") no-repeat center";
+            }
+            else
+            {
+                div.style.background = "#" + _ow.btn.logox + " url(\"" + pubwwwurl + "/img/bookmarklet/images/onlywire_logo_small_square.png\") no-repeat center";
+            }
+
+            return div;
+        };
+
+        pub.genBookList = function(content, setValue) {
+
+            if (!content)
+            {
+                return;
+            }
+
+            var self = {};
+
+            self.elements = []; // store the elements
+
+            var div = document.createElement("div");
+            div.style.margin = "0px 0px 10px 0px";
+            div.style.overflow = "auto";
+            div.style.position = "relative";
+            div.style.maxHeight = "200px";
+            div.style.backgroundColor = "white";
+
+            for (var i = 0, item, divItem, labelItem, imgItem, labelId; i < content.length; i++)
+            {
+                item = content[i];
+
+                var includeThis = false;
+
+                if (_ow.Auth.isLoggedIn())
+                {
+                    includeThis = true;
+                }
+                else
+                {
+                    var svcId = item.pk_id * 1;
+
+                    if (_ow.btn.services.length == 0)
+                    {
+                        includeThis = true;
+                    }
+                    else
+                    {
+                        if (!Array.indexOf)
+                        {
+                            for (var j = 0; j < _ow.btn.services.length; j++)
+                            {
+                                if (_ow.btn.services[j] == svcId)
+                                {
+                                    includeThis = true;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (_ow.btn.services.indexOf(svcId) > -1)
+                            {
+                                includeThis = true;
+                            }
+                        }
+                    }
+                }
+
+                if (includeThis)
+                {
+
+                    labelId = "label_" + item.pk_id;
+                    divItem = document.createElement("div");
+                    divItem.style.cssText = "float:left";
+                    divItem.style.width = "200px";
+                    divItem.style.fontSize = "10px";
+                    divItem.style.marginBottom = "4px";
+                    labelItem = document.createElement("label");
+                    labelItem.setAttribute("for", labelId);
+
+                    try
+                    {
+                        var inputItem = document.createElement("<input type='checkbox' checked='checked'>");
+                    }
+                    catch (err)
+                    {
+                        var inputItem = document.createElement("input");
+                    }
+
+                    inputItem.setAttribute("id", labelId);
+                    inputItem.style.verticalAlign = "middle";
+                    inputItem.style.marginRight = "3px";
+                    inputItem.type = "checkbox";
+
+                    if (setValue)
+                    {
+                        if (item.name == "Facebook Group" || item.name == "LinkedIn Group")
+                        {
+                            inputItem.value = item.name_clean + '_' + item.group_name;
+                        }
+                        else if (item.name == "Facebook Page")
+                        {
+                            inputItem.value = item.name_clean + '_' + item.page_name;
+                        }
+                        else
+                        {
+                            inputItem.value = item.name_clean;
+                        }
+
+                        inputItem.setAttribute("name", "service[]");
+
+                    }
+                    else
+                    {
+                        if (item.name == "Facebook Group" || item.name == "LinkedIn Group")
+                        {
+                            inputItem.value = item.pk_id + '_' + item.group_name;
+                        }
+                        else if (item.name == "Facebook Page")
+                        {
+                            inputItem.value = item.pk_id + '_' + item.page_name;
+                        }
+                        else
+                        {
+                            inputItem.value = item.pk_id;
+                        }
+                    }
+
+                    inputItem.checked = "true";
+
+                    imgItem = document.createElement("img");
+                    imgItem.style.verticalAlign = "middle";
+                    imgItem.style.marginRight = "3px";
+                    imgItem.src = pubwwwurl + "/img/service/small/" + item.small_icon;
+
+                    if (_ow.Auth.isLoggedIn())
+                    {
+                        divItem.appendChild(inputItem);
+                    }
+
+                    labelItem.appendChild(imgItem);
+
+                    if (_ow.Auth.isLoggedIn())
+                    {
+                        if (item.name == 'Facebook Group' || item.name == "LinkedIn Group")
+                        {
+                            labelItem.appendChild(document.createTextNode(item.group_name));
+                        }
+                        else if (item.name == 'Facebook Page')
+                        {
+                            labelItem.appendChild(document.createTextNode(item.page_name));
+                        }
+                        else
+                        {
+                            labelItem.appendChild(document.createTextNode(item.name));
+                        }
+                    }
+                    else
+                    {
+                        var aLink = document.createElement("a");
+                        aLink.style.color = "#000";
+
+                        var postLink = item.post_link;
+                        aLink.href = wwwurl + "/bounce?t=" + encodeURIComponent(postLink);
+                        aLink.setAttribute("post_link", postLink);
+
+                        if (_ow.Auth.isLoggedIn())
+                        {
+                            aLink.setAttribute("title", "Auto submission not yet supported, coming soon!");
+                        }
+
+                        aLink.setAttribute("rel", "external");
+                        aLink.setAttribute("target", "_blank");
+                        aLink.style.textDecoration = "underline";
+                        aLink.appendChild(document.createTextNode(item.name));
+
+                        if (!postLink)
+                        {
+                            labelItem.appendChild(document.createTextNode(item.name));
+                        } else
+                        {
+                            labelItem.appendChild(aLink);
+                        }
+                    }
+
+                    divItem.appendChild(labelItem);
+                    div.appendChild(divItem);
+
+                    // add it to the self
+                    self.elements.push(inputItem);
+                }
+            }
+            self.list = div;
+
+            return self;
+        };
+
+        pub.genWrapper = function() {
+            var div = document.createElement("div");
+            div.fontSize = "10px";
+            div.color = "#000";
+            div.style.margin = "10px";
+            div.style.textAlign = "center";
+            div.style.position = "relative";
+
+            return div;
+        };
+
+        pub.genWrapContent = function() {
+
+            var div = document.createElement("div");
+            div.style.marginTop = "10px";
+            div.style.textAlign = "center";
+            div.appendChild(document.createTextNode("By signing up, you agree to the "));
+
+            var terms = document.createElement("a");
+            terms.style.color = "#666666";
+            terms.appendChild(document.createTextNode("Terms of service"));
+            terms.href = "#";
+            terms.onclick = function() {
+                window.open(wwwurl + "/terms");
+                return false;
+            }
+
+            var privacy = document.createElement("a");
+            privacy.style.color = "#666666";
+            privacy.href = "#";
+            privacy.onclick = function() {
+                window.open(wwwurl + "/terms");
+                return false;
+            }
+            privacy.appendChild(document.createTextNode("Privacy Policy."));
+
+            div.appendChild(terms);
+            div.appendChild(document.createTextNode(" and "));
+            div.appendChild(privacy);
+
+            return div;
+        };
+
+        pub.genInfo = function(text) {
+            var div = document.createElement("div");
+            div.style.border = "1px solid #ffcc00";
+            div.style.backgroundColor = "#FDED8B";
+            div.style.color = "#000";
+            div.style.fontWeight = "bold";
+            div.style.width = "192px";
+            div.style.height = "52px";
+            div.style.fontSize = "10px";
+            div.style.position = "absolute";
+            div.style.top = "10px";
+            div.style.right = "10px";
+            var span = document.createElement("span");
+            span.style.position = "absolute";
+            span.style.top = "8px";
+            span.style.left = "8px";
+            span.style.right = "8px";
+            span.appendChild(document.createTextNode(text));
+            var div2 = document.createElement("div");
+            div2.style.position = "absolute";
+            div2.style.top = "52px";
+            div2.style.right = "10px";
+            div2.style.width = "8px";
+            div2.style.height = "15px";
+            div2.style.background = "url(\"" + pubwwwurl + "/img/bookmarklet/images/arrow.gif\") no-repeat";
+            div.appendChild(div2);
+            div.appendChild(span);
+            return div;
+        };
+        pub.genTags = function() {
+            var div = _ow.E("div");
+            var tags = _ow.Auth.authData.tags || {};
+
+            div.appendChild(this.genHeader(0));
+            div.appendChild(this.genLogo());
+            var title = div.appendChild(this.genTitle("Select Tags"));
+
+
+            //div.style.cssText = "expression(this.scrollHeight > 59? '60px' : 'auto');";
+//        div.style.position = "relative";
+            /*
+             */
+
+            var cont = _ow.E("div");
+
+            cont.style.overflow = "auto";
+            cont.style.background = "none";
+            cont.style.maxHeight = "200px";
+            for (var i = 0; i < tags.length; i++)
+            {
+                var span = document.createElement("span");
+                span.appendChild(document.createTextNode(tags[i].tag));
+                span.style.color = "#666666";
+                span.style.textDecoration = "underline";
+                span.style.cursor = "pointer";
+                span.id = "tag_" + tags[i].tag;
+
+                span.onclick = function() {
+                    var tagEl = _ow.Popup.fieldsToUpdate["tags"];
+
+                    if (tagEl.value == "comma separated")
+                    {
+                        tagEl.value = "";
+                    }
+                    _ow.swap(this.id.replace(/tag_/, ""));
+                }
+
+                cont.appendChild(span);
+                cont.appendChild(document.createTextNode(" "));
+            }
+            div.appendChild(cont);
+
+            var done = this.genButton("Done", function(e) {
+                _ow.Event.stop(e);
+                _ow.Popup.loadBookmark();
+
+            });
+
+            div.appendChild(this.genFooter(done));
+
+            return div;
+        };
+
+        pub.genHomepage = function() {
+
+            var div = _ow.E("div");
+
+            div.appendChild(this.genHeader(0));
+            div.appendChild(this.genLogo());
+
+            var title = div.appendChild(this.genTitle("Bookmark Content"));
+
+            var bookList = this.genBookList(_ow.Auth.authData.services || {});
+
+            var abc = bookList.list.getElementsByTagName("a");
+
+            // ie fix
+            for (var i = 0, arr = []; i < abc.length; i++)
+            {
+                arr.push(abc[i]);
+            }
+
+            _ow.Popup.fieldsToUpdate.services = arr;
+
+            div.appendChild(bookList.list);
+
+            if (_ow.Auth.isLoggedIn()) {
+                div.appendChild(this.selectAllNone(bookList.list));
+            }
+
+            var signup = this.genButton("Sign Up", function(e) {
+                _ow.Event.stop(e);
+                _ow.Popup.loadSignup();
+            });
+
+            var signin = this.genButton("Login", function(e) {
+                _ow.Event.stop(e);
+                _ow.Popup.loadSignin();
+            });
+
+            if (sso == 1)
+            {
+                div.appendChild(this.genFooter(signin));
+            }
+            else
+            {
+                div.appendChild(this.genFooter(signup, signin));
+            }
+
+            return div;
+        };
+
+        pub.getTheHeight = function(elem) {
+            // simulate it by adding it into a div that has the same width of the popup
+            var theHeight;
+            var div = document.createElement("div");
+            div.style.width = _ow.Popup.popupWidth;
+            div.appendChild(elem);
+            document.body.appendChild(div);
+            theHeight = div.clientHeight;
+            document.body.removeChild(div);
+            return theHeight;
+        };
+        pub.genAd = function(el) {
+            var ad = document.createElement("div");
+            ad.style.position = "relative";
+            ad.style.marginTop = "25px";
+            ad.style.marginLeft = "-10px";
+            ad.style.width = "434px";
+            ad.style.height = "88px";
+            var img = document.createElement("img");
+            img.src = pubwwwurl + "/img/bookmarklet/images/logo.png";
+            img.style.cursor = "pointer";
+            img.onclick = function() {
+                window.open(_ow.adurl, 'popUpWindow', '')
+            }
+            ad.appendChild(img);
+            el.style.height = "130px";
+            el.appendChild(ad);
+        };
+
+        pub.genButton = function(text, callback) {
+
+            var button = document.createElement("button");
+
+            button.appendChild(document.createTextNode(text));
+            button.onclick = callback;
+
+            return button;
+        };
+
+        pub.genFooter = function(button, nextButton) {
+
+            var div = document.createElement("div");
+            div.style.height = "30px";
+            div.style.textAlign = "center";
+            div.style.margin = "10px";
+
+            if (nextButton)
+            {
+                var yellow = document.createElement("span");
+                yellow.style.color = "black";
+                yellow.style.display = "block";
+                yellow.style.fontWeight = "bold";
+
+                div.appendChild(yellow);
+                div.style.height = "50px";
+            }
+
+            button.style.marginTop = "5px";
+            button.style.marginLeft = "5px";
+            button.style.padding = "5px";
+            button.style.borderRadius = "3px";
+            button.style.fontWeight = "bold";
+            button.style.cursor = "pointer";
+            button.style.border = "1px solid #999";
+            button.style.background = "#E5E5E5";
+            button.style.color = "#333";
+
+            div.appendChild(button);
+
+            if (nextButton)
+            {
+                nextButton.style.marginTop = "5px";
+                nextButton.style.marginLeft = "5px";
+                nextButton.style.marginTop = "5px";
+                nextButton.style.marginLeft = "5px";
+                nextButton.style.padding = "5px";
+                nextButton.style.borderRadius = "3px";
+                nextButton.style.fontWeight = "bold";
+                nextButton.style.cursor = "pointer";
+                nextButton.style.border = "1px solid #999";
+                nextButton.style.background = "#E5E5E5";
+                nextButton.style.color = "#333";
+
+                div.appendChild(nextButton);
+            }
+
+            /* advertisement */
+            if (_ow.Auth.authData.sub_type == "free")
+            {
+
+            }
+
+            return div;
+        };
+
+        pub.genTable = function(content) {
+            if (!content)
+                return;
+            var self = {};
+            self.elements = {}; // store the elements
+            var table = document.createElement("table");
+            var tbody = document.createElement("tbody");
+            table.style.fontSize = "10px";
+            table.style.width = "380px";
+            table.style.margin = "auto";
+            table.style.textAlign = "left";
+            for (var i = 0; i < content.length; i++) {
+                var trObj = content[i];
+                var tr = document.createElement("tr");
+                var tdLeft = document.createElement("td");
+
+                tr.style.height = "25px";
+
+                tdLeft.style.textAlign = "right";
+                tdLeft.style.width = "100px";
+                tdLeft.style.paddingRight = "5px";
+                tdLeft.appendChild(document.createTextNode(trObj.left));
+                var tdRight = document.createElement("td");
+                var tdRightmost = document.createElement("td");
+
+                if (trObj.type == "input" || trObj.type == "input_password" || trObj.type == "input_checkbox")
+                {
+                    var input = document.createElement("input");
+
+                    input.style.border = "1px solid #6eafd7";
+                    input.style.padding = "0 3px";
+                    input.style.fontSize = "10px";
+                    input.style.width = "200px";
+
+                    if (trObj.type == "input_password")
+                    {
+                        input.type = "password";
+                    }
+                    else if (trObj.type == "input_checkbox")
+                    {
+                        input.type = "checkbox";
+                        input.style.width = "auto";
+                        input.style.border = "0px";
+                    }
+                    else
+                    {
+                        input.type = "text";
+                        if (trObj.id == "url")
+                        {
+
+                            input.onchange = function() {
+
+                            }
+                            input.onfocus = function() {
+
+                            }
+
+                            input.onmouseout = function()
+                            {
+
+                            }
+                        }
+                    }
+                    if (trObj.id == "cal")
+                    {
+                        input.name = "cal";
+                        input.id = "cal";
+                        input.disabled = true;
+                        input.style.display = "none";
+                        input.style.width = "121px";
+
+                        tdRightmost.noWrap = true;
+
+                        var script1 = document.createElement("script");
+
+                        script1.type = "text/javascript";
+                        script1.src = pubwwwurl + "/js/bookmarklet/datetimepicker_css_compressed.js";
+
+                        document.getElementsByTagName('head').item(0).appendChild(script1);
+
+                    }
+
+                    input.value = trObj.value;
+                    input.onclick = function() {
+                        if (this.value == "comma separated" || this.value == "comma separated") {
+                            this.value = "";
+                        }
+                    }
+                    //input.setAttribute("maxLength", "100");
+
+                    self.elements[trObj.id] = input;
+
+                    tdRight.appendChild(input);
+
+                }
+                else if (trObj.type == "select") {
+                    var cat = new Array();
+                    cat[0] = "Business";
+                    cat[1] = "Entertainment";
+                    cat[2] = "Lifestyle";
+                    cat[3] = "Offbeat/Fun";
+                    cat[4] = "Science";
+                    cat[5] = "Sports";
+                    cat[6] = "Technology";
+                    var sel = document.createElement('select');
+                    for (var z = 0; z < 7; z++) {
+                        var opt = document.createElement('option');
+                        opt.setAttribute('value', z);
+                        if (z == 0) {
+                            opt.setAttribute('selected', 'selected');
+                        }
+                        opt.appendChild(document.createTextNode(cat[z]));
+                        sel.appendChild(opt);
+                    }
+                    sel.value = trObj.value;
+                    sel.style.padding = "0 3px";
+                    sel.style.fontSize = "10px";
+                    tdRight.appendChild(sel);
+                    self.elements[trObj.id] = sel;
+                }
+                else if (trObj.type == "textarea") {
+                    var textarea = document.createElement("textarea");
+                    textarea.style.border = "1px solid #6eafd7";
+                    textarea.style.padding = "0 3px";
+                    textarea.style.fontSize = "10px";
+                    textarea.style.width = "200px";
+                    textarea.style.height = "70px";
+
+                    tdLeft.style.verticalAlign = "top";
+                    tdRight.appendChild(textarea);
+                    self.elements[trObj.id] = textarea;
+                }
+                else if (trObj.id == "urlstyle")
+                {
+                    var span = document.createElement("span");
+                    span.style.fontSize = "8px";
+                    span.style.color = "#666666";
+                    //attach g+ button and fb like
+                    var spangb = document.createElement("span");
+                    var spanlike = document.createElement("span");
+                    spangb.id = "onlywire_gb";
+                    spangb.style.position = "relative";
+                    spangb.style.top = "1px";
+                    spanlike.id = "onlywireflike";
+                    spanlike.style.position = "relative";
+                    spanlike.style.top = "1px";
+
+                    //attach shortener
+                    var sinput = document.createElement("input");
+                    sinput.type = "checkbox";
+                    sinput.id = "ow_shortener";
+                    sinput.name = "ow_shortener";
+                    sinput.onclick = function() {
+                        if (this.checked) {
+                            this.value = "1";
+                        } else {
+                            this.value = "0";
+                        }
+                    }
+                    var shortlab = document.createElement("label");
+                    shortlab.style.top = "1px";
+                    var shorttext = "   ";
+                    var stext = document.createTextNode(shorttext);
+                    shortlab.appendChild(stext);
+                    var fbspan = document.createElement("div");
+                    fbspan.id = "fb-root";
+
+                    // span.appendChild(sinput);
+                    // span.appendChild(shortlab);
+                    // span.appendChild(spangb);
+                    // span.appendChild(spanlike);
+                    // span.appendChild(fbspan);
+                    // tdRight.appendChild(span);
+                    // self.elements[trObj.id] = span;
+
+                }
+                else { // element
+                    tdRight.appendChild(trObj.type);
+                    self.elements[trObj.id] = trObj.type;
+                }
+                tr.appendChild(tdLeft);
+                tr.appendChild(tdRight);
+                tr.appendChild(tdRightmost);
+                tbody.appendChild(tr);
+            }
+            table.appendChild(tbody);
+
+            self.table = table;
+
+            return self;
+        };
+        pub.genLogins = function(all_services) {
+            var form = _ow.H('<form style="height: 300px; overflow: auto;width: 100%;"></form>');
+
+            var html;
+            for (var i = 0; i < all_services.length; i++)
+            {
+                var pk_id = all_services[i].pk_id;
+                var username = false, password = false;
+                // check wether this pk_id exists in the _ow.Auth.authData.services
+                // array of objects
+                for (var y = 0; y < _ow.Auth.authData.services.length; y++)
+                {
+                    var obj = _ow.Auth.authData.services[y];
+                    if (obj.pk_id == pk_id)
+                    {
+                        // it exists, we have a username and password to use
+                        username = obj.username;
+                        password = obj.password;
+                        break;
+                    }
+                }
+
+                html = '<div style="float: left;height:85px;width:200px;overflow:hidden;text-align: center;">';
+
+                html += '<div style="margin-left:40px;text-align:left;margin-top:5px; margin-bottom:5px;"><img src="' + pubwwwurl + "/img/service/small/" + all_services[i].small_icon + '" style="margin-right: 5px;vertical-align: middle;" />' + all_services[i].name + '</div>';
+
+                if (pk_id != 101)
+                {
+                    html += '<input name="' + all_services[i].pk_id + '|username" type="text" value="' + (username || "username") + '" style="font-size: 11px;border:1px solid #BDBDA9;color:#999999;margin-bottom:2px;"/><br>';
+                    html += '<input name="' + all_services[i].pk_id + '|password" type="text" value="' + (password || "password") + '" style="font-size: 11px;border:1px solid #BDBDA9;color:#999999;"/>';
+                }
+                else
+                {
+                    html += '<a href="' + wwwurl + '/services">Authorize<br/>Change<br/>Remove</a>';
+                }
+
+                html += '</div>';
+
+
+                form.appendChild(_ow.H(html));
+            }
+
+            var inputs = form.getElementsByTagName('input');
+            for (var x = 0; x < inputs.length; x++) {
+                inputs[x].onclick = function(e) {
+                    if (this.value == 'password' ||
+                            this.value == 'username') {
+                        this.value = '';
+                    }
+                };
+            }
+
+
+            return form;
+        };
+        pub.selectAllNone = function(cont) {
+            var selectNone = 'Select None';
+            var selectAll = 'Select All';
+
+            var link = _ow.H('<a href="#" style="color:#666666;display:block;margin-bottom:10px;text-align:center;">' + selectNone + '</a>');
+
+            link.onclick = function(e) {
+                // all inputs inside the list
+                var inputs = cont.getElementsByTagName("input");
+
+                if (this.innerHTML == selectNone) {
+                    // deselect every input checkbox
+                    for (var i = 0; i < inputs.length; i++)
+                        inputs[i].checked = false;
+
+                    this.innerHTML = selectAll;
+
+                }
+                else if (this.innerHTML == selectAll) {
+                    // select all inputs
+                    for (var i = 0; i < inputs.length; i++)
+                        inputs[i].checked = true;
+
+                    this.innerHTML = selectNone;
+                }
+
+                _ow.Event.stop(e);
+
+            };
+
+            return link;
+
+        };
+        pub.genMyLoginsPage = function() {
+
+            var div = _ow.E("div");
+            div.appendChild(this.genHeader(0));
+            div.appendChild(this.genLogo());
+            var space = _ow.H("<br/><br/>");
+            var space1 = _ow.H("<br/><br/>");
+            div.appendChild(space);
+            var services_page = document.createElement("a");
+            services_page.style.position = "absolute";
+            services_page.style.left = "240px";
+            services_page.style.color = "#666666";
+            services_page.href = "#";
+            services_page.onclick = function() {
+                window.open(wwwurl + "/services");
+                return false;
+            }
+            services_page.appendChild(document.createTextNode("Set up services"));
+            div.appendChild(services_page);
+            div.appendChild(space1);
+
+
+            return div;
+
+
+        };
+        pub.genBookmark = function() {
+
+            if (_ow.Auth.authData.services == false) {
+                return pub.myloginspage;
+
+            } else {
+                var div = _ow.E("div");
+                div.appendChild(this.genHeader(0));
+                div.appendChild(this.genLogo());
+
+                var title = div.appendChild(this.genTitle("Bookmark Content"));
+
+                var services_page = document.createElement("a");
+                services_page.style.position = "absolute";
+                services_page.style.top = "3px";
+                services_page.style.right = "10px";
+                services_page.style.color = "#666666";
+                services_page.href = "#";
+                services_page.onclick = function() {
+
+                    if (_ow.Auth.authData.ent_username)
+                    {
+                        window.open(wwwurl + "/secure/my/networks");
+                    }
+                    else
+                    {
+                        window.open(wwwurl + "/secure/my/networks");
+                    }
+
+                    return false;
+                }
+
+                services_page.appendChild(document.createTextNode("Set up bookmark services"));
+                var div_s = document.createElement("div");
+                div_s.style.position = "relative";
+                div_s.style.height = "21px";
+                div_s.style.width = "394px";
+                div_s.style.background = "url(\"" + pubwwwurl + "/img/bookmarklet/images/round.png\") no-repeat top left";
+                div_s.style.fontSize = "10px";
+                div_s.style.marginBottom = "10px";
+                div_s.style.marginLeft = "6px";
+                var inDiv = document.createElement("div");
+                inDiv.style.position = "absolute";
+                inDiv.style.left = "10px";
+                inDiv.style.top = "3px";
+                inDiv.appendChild(document.createTextNode("Post this page to all these services: "));
+                div_s.appendChild(services_page);
+                div_s.appendChild(inDiv);
+
+                var hDiv = div.appendChild(div_s);//this.genRound("Post this page to all these services:","Set up bookmark services", swwwurl+"/services"));
+
+                var bookList = this.genBookList(_ow.Auth.authData.services || {});
+
+                div.appendChild(bookList.list);
+                div.appendChild(this.selectAllNone(bookList.list));
+
+                div.appendChild(this.genRound("Description"));
+                //var tags = this.genTags(_ow.Auth.authData.tags || {});
+                var tags = _ow.H('<a style="color:#666666;" href="#"></a>');
+                tags.onclick = function(e) {
+                    _ow.Event.stop(e);
+                    _ow.Popup.loadTags();
+                };
+                var content = [
+                    {
+                        id: "title",
+                        left: "Title",
+                        value: "",
+                        type: "input"
+                    },
+                    {
+                        id: "url",
+                        left: "URL",
+                        value: "",
+                        type: "input"
+                    },
+                    {
+                        id: "tags",
+                        left: "Tags",
+                        value: "",
+                        type: "input"
+                    },
+                    {
+                        id: "0",
+                        left: "",
+                        value: "",
+                        type: tags
+                    },
+                    {
+                        id: "notes",
+                        left: "Description",
+                        value: "",
+                        type: "textarea"
+                    },
+                    {
+                        id: "cal",
+                        left: "Post",
+                        value: " ",
+                        type: "input"
+                    }
+                ];
+                var wrap = this.genWrapper();
+                var table = this.genTable(content);
+
+                _ow.Popup.fieldsToUpdate["title"] = table.elements.title;
+                _ow.Popup.fieldsToUpdate["url"] = table.elements.url;
+                _ow.Popup.fieldsToUpdate["urlstyle"] = table.elements.url;
+                _ow.Popup.fieldsToUpdate["tags"] = table.elements.tags;
+                _ow.Popup.fieldsToUpdate["cal"] = table.elements.cal;
+                _ow.Popup.fieldsToUpdate["category"] = table.elements.category;
+
+                wrap.appendChild(table.table);
+                div.appendChild(wrap);
+
+                //hardcode it in :( FIXME
+                table.elements.tags.id = "tags";
+
+                var button = this.genButton("Post Bookmark", function(e) {
+
+                    _ow.Event.stop(e);
+
+                    var submit = new _ow.Submit(table.elements);
+
+                    submit.bookmark(bookList.elements);
+                });
+
+                div.appendChild(this.genFooter(button));
+            }
+            // we do this so we can get the clientHeight
+            //div.theHeight = this.getTheHeight(div);
+
+            return div;
+        };
+        pub.genStatus = function() {
+            if (!_ow.Auth.isLoggedIn()) {
+                return pub.signin;
+            }
+
+            // if there are no status services, run setup page
+            if (_ow.Auth.authData.status_services == false)
+                return pub.myloginspage;
+
+            var div = _ow.E("div");
+            div.appendChild(this.genHeader(1));
+            div.appendChild(this.genLogo());
+            div.appendChild(this.genTitle("Post Status"));
+
+            var services_page = document.createElement("a");
+            services_page.style.position = "absolute";
+            services_page.style.top = "3px";
+            services_page.style.right = "10px";
+            services_page.style.color = "#666666";
+            services_page.href = "#";
+
+            services_page.onclick = function() {
+                if (_ow.Auth.authData.ent_username)
+                {
+                    window.open(wwwurl + "/services?u=" + _ow.Auth.authData.ent_username);
+                }
+                else
+                {
+                    window.open(wwwurl + "/services?u=" + _ow.Auth.authData.username);
+                }
+
+                return false;
+            }
+            services_page.appendChild(document.createTextNode("Set up services"));
+            var div_s = document.createElement("div");
+            div_s.style.position = "relative";
+            div_s.style.height = "21px";
+            div_s.style.width = "394px";
+            div_s.style.background = "url(\"" + pubwwwurl + "/img/bookmarklet/images/round.png\") no-repeat top left";
+            div_s.style.fontSize = "10px";
+            div_s.style.marginBottom = "10px";
+            div_s.style.marginLeft = "6px";
+            var inDiv = document.createElement("div");
+            inDiv.style.position = "absolute";
+            inDiv.style.left = "10px";
+            inDiv.style.top = "3px";
+            inDiv.appendChild(document.createTextNode("Post a status/tweet to these services: "));
+            div_s.appendChild(services_page);
+            div_s.appendChild(inDiv);
+
+
+
+            div.appendChild(div_s);//this.genRound("Post a status/tweet to these services:","Set up services", swwwurl+"/services"));
+
+            var form = _ow.E("form");
+
+            var bookList = this.genBookList(_ow.Auth.authData.status_services || {});
+
+            form.appendChild(bookList.list);
+            form.appendChild(this.selectAllNone(bookList.list));
+
+            var status = _ow.H('<table style="margin: auto; font-size: 10px; width: 380px; text-align: left;"><tbody><tr><td style="text-align: right; width: 100px; vertical-align: top;">Status</td><td><textarea name="status" style="border: 1px solid rgb(110, 175, 215); padding: 0pt 3px; font-size: 10px; width: 200px; height: 70px;"></textarea></td></tr></tbody></table>');
+
+            form.appendChild(status);
+
+            var button = this.genButton("Post Status", function(e) {
+                _ow.Event.stop(e);
+
+                var submit = new _ow.Submit(form);
+
+                submit.status();
+            });
+            form.appendChild(this.genFooter(button));
+
+            div.appendChild(form);
+
+            return div;
+        };
+        pub.genShare = function() {
+            var div = _ow.E("div");
+            div.appendChild(this.genHeader(2));
+            div.appendChild(this.genLogo());
+            div.appendChild(this.genTitle("Share/Email Content"));
+            //div.appendChild(this.genRound("Email to Friends and Colleagues:"));
+            var from = "";
+            if (_ow.Auth.isLoggedIn())
+            {
+                from = _ow.Auth.authData.email;
+            }
+            var content = [
+                {
+                    id: "to",
+                    left: "Enter Email Addresses",
+                    value: "comma separated",
+                    type: "input"
+                },
+                {
+                    id: "from",
+                    left: "Your Email Address",
+                    value: from,
+                    type: "input"
+                },
+                {
+                    id: "message",
+                    left: "Message",
+                    value: "",
+                    type: "textarea"
+                }
+            ];
+            var wrap = this.genWrapper();
+            var table = this.genTable(content);
+
+            wrap.appendChild(table.table);
+            div.appendChild(wrap);
+
+            var button = this.genButton("Send", function() {
+                var submit = new _ow.Submit(table.elements);
+                submit.share();
+            });
+            div.appendChild(this.genFooter(button));
+
+            return div;
+        };
+
+        pub.genSignup = function() {
+            var div = _ow.E("div");
+
+            div.appendChild(this.genHeader(0));
+            div.appendChild(this.genLogo());
+            div.appendChild(this.genTitle("Create a free account"));
+
+            var img = document.createElement("img");
+            img.setAttribute("alt", "Captcha Image");
+            img.style.width = "199px";
+            img.src = wwwurl + "/securimage/securimage_show.php";
+
+            var span = document.createElement("span");
+            var link = document.createElement("a");
+            link.style.color = "#666666";
+            link.href = "#";
+            link.appendChild(document.createTextNode("Login"));
+            link.onclick = function() {
+                _ow.Popup.loadSignin();
+                return false;
+            }
+            span.appendChild(document.createTextNode("Already have an account? "));
+            span.appendChild(link);
+
+            var content = [
+                {
+                    id: "0",
+                    left: "",
+                    value: "Already have an account? <a href='#'>Login</a>",
+                    type: span
+                },
+                {
+                    id: "firstname",
+                    left: "First name",
+                    value: "",
+                    type: "input"
+                },
+                {
+                    id: "lastname",
+                    left: "Last name",
+                    value: "",
+                    type: "input"
+                },
+                {
+                    id: "username",
+                    left: "Username",
+                    value: "",
+                    type: "input"
+                },
+                {
+                    id: "password",
+                    left: "Password",
+                    value: "",
+                    type: "input_password"
+                },
+                {
+                    id: "email",
+                    left: "Email",
+                    value: "",
+                    type: "input"
+                },
+                {
+                    id: "0",
+                    left: "",
+                    value: "",
+                    type: img
+                },
+                {
+                    id: "captcha_code",
+                    left: "Enter Code",
+                    value: "",
+                    type: "input"
+                }
+            ];
+            var wrap = this.genWrapper();
+            var table = this.genTable(content);
+            wrap.appendChild(table.table);
+
+            wrap.appendChild(this.genWrapContent());
+            div.appendChild(wrap);
+
+            var button = this.genButton("Sign Up", function() {
+                var submit = new _ow.Submit(table.elements);
+                submit.signup();
+            });
+            div.appendChild(this.genFooter(button));
+
+            return div;
+        };
+        pub.genSignin = function() {
+            var div = _ow.E("div");
+            div.appendChild(this.genHeader(0));
+            div.appendChild(this.genLogo());
+            div.appendChild(this.genTitle("Login"));
+            //div.appendChild(this.genRound("To bookmark content, first login"));
+
+            var span = document.createElement("span");
+            var link = document.createElement("a");
+            link.style.color = "#666666";
+            link.href = "#";
+            link.appendChild(document.createTextNode("Sign up"));
+            link.onclick = function() {
+                _ow.Popup.loadSignup();
+                return false;
+            }
+
+            var forgot = document.createElement("a");
+            forgot.style.color = "#666666";
+            forgot.href = "#";
+            forgot.appendChild(document.createTextNode("Forgot password?"));
+            forgot.onclick = function() {
+                window.open(wwwurl + "/forgotpassword");
+                return false;
+            }
+
+            span.appendChild(document.createTextNode("New to " + _ow.sitename + "? "));
+            span.appendChild(link);
+
+            var content = [
+                {
+                    id: "0",
+                    left: "",
+                    value: "",
+                    type: span
+                },
+                {
+                    id: "username",
+                    left: "Username",
+                    value: "",
+                    type: "input"
+                },
+                {
+                    id: "password",
+                    left: "Password",
+                    value: "",
+                    type: "input_password"
+                },
+                {
+                    id: "0",
+                    left: "",
+                    value: "Forgot password?",
+                    type: forgot
+                }
+            ];
+            var wrap = this.genWrapper();
+            var table = this.genTable(content);
+            wrap.appendChild(table.table);
+            div.appendChild(wrap);
+
+            var button = this.genButton("Login", function() {
+                var submit = new _ow.Submit(table.elements);
+                submit.signin();
+            });
+            div.appendChild(this.genFooter(button));
+
+            return div;
+        };
+        return pub;
+    })();
+
+    _ow.Popup = (function() {
+        var pub = {};
+        pub.popup = null;
+        pub.currentButton = null;
+        pub.currentTag = null;
+        pub.fieldsToUpdate = {};
+        pub.popupHeight = 200;
+        pub.popupWidth = 432;
+
+        pub.init = function() {
+            // generate popup only if we dont have the popup (for login process)
+            if (!this.popup) {
+                pub.popup = pub.genPopup();
+                document.body.appendChild(pub.popup);
+                document.onclick = function() {
+                    // _ow.Popup.hide();
+                };
+            }
+            // show it, it's loaded if it's a bookmarklet
+            if (typeof(_bookmarklet) != "undefined") {
+                _ow.Popup.show();
+                // hide the loading text
+                if (typeof(_ow_loading_text) != "undefined") {
+                    _ow_loading_text.hide();
+                }
+            }
+            if (_ow.Auth.isLoggedIn()) {
+                this.updateFields();
+                this.loadBookmark();
+            } else {
+                this.loadHomepage();
+            }
+        };
+        pub.show = function(button) {
+            // if it's called as a bookmarklet we don't
+            // care about timing issues, the popup is THERE
+            if (typeof(_bookmarklet) == "undefined") {
+                if (!this.popup)
+                    return; // return if its not created yet
+            }
+
+            var topLeft = [];
+            if (button) {
+                this.currentButton = button;
+                topLeft = _ow.getTopLeft(button);
+                this.popup.style.position = "absolute";
+            } else {
+                this.currentButton = null;
+                topLeft[0] = 0;
+                topLeft[1] = 0;
+                this.popup.style.position = "fixed";
+            }
+            this.popup.style.display = "block";
+            this.popup.style.top = topLeft[0] + "px";
+            this.popup.style.left = topLeft[1] + "px";
+
+            if (_ow.Auth.authData.services)
+            {
+                this.updateFields();
+            }
+        };
+        pub.align = function(button) {
+            if (!this.popup)
+                return; // return if its not created yet
+            if (this.popup.style.display == "none")
+                return;
+
+            var topLeft = [];
+
+            if (button) {
+                topLeft = _ow.getTopLeft(button);
+                this.popup.style.position = "absolute";
+            } else {
+                topLeft[0] = 0;
+                topLeft[1] = 0;
+                this.popup.style.position = "fixed";
+
+            }
+            this.popup.style.top = topLeft[0] + "px";
+            this.popup.style.left = topLeft[1] + "px";
+
+        };
+        pub.hide = function(button) {
+            this.popup.style.display = "none";
+        };
+        pub.updateFields = function() {
+            //update fields given this.currentTag
+            if (typeof(_bookmarklet) == "undefined") {
+                if (!this.currentTag)
+                    return;
+            } else {
+                // mega hack
+                this.currentTag = _ow.H("<b></b>");
+            }
+            var title = this.currentTag.getAttribute("title") || window.document.title;
+            var url = this.currentTag.getAttribute("url") || window.location.href;
+            var tags = this.currentTag.getAttribute("tags") || "comma separated";
+            var cal = this.currentTag.getAttribute("cal");
+
+            if (this.fieldsToUpdate.title &&
+                    this.fieldsToUpdate.url &&
+                    this.fieldsToUpdate.tags && this.fieldsToUpdate.cal) {
+                this.fieldsToUpdate.title.value = title;
+                this.fieldsToUpdate.url.value = url;
+                this.fieldsToUpdate.tags.value = tags;
+                this.fieldsToUpdate.cal.value = cal;
+            }
+//}
+            if (this.fieldsToUpdate.services) {
+                for (var i = 0, link; i < this.fieldsToUpdate.services.length; i++) {
+                    link = this.fieldsToUpdate.services[i];
+                    link.href = wwwurl + "/bounce?t=" + encodeURIComponent(link.getAttribute("post_link").replace(/\[URL\]/g, encodeURIComponent(url)).replace(/\[TITLE\]/g, encodeURIComponent(title)));
+                }
+            }
+        };
+        pub.getClientHeight = function() {
+            var theHeight = 0;
+            this.popup.style.display = "block";
+            theHeight = this.popup.clientHeight;
+            return theHeight;
+        };
+        pub.genPopup = function() {
+            var div = _ow.E("div");
+            div.style.width = this.popupWidth + "px";
+            //div.style.height = this.popupHeight+"px";
+            div.style.position = "absolute";
+            div.style.zIndex = "10000020";
+            div.style.backgroundColor = "#" + _ow.btn.backgroundx;
+            div.style.display = "none";
+            div.style.fontFamily = "verdana";
+            div.style.fontSize = "11px";
+            div.style.textAlign = "left";
+            div.style.color = "#" + _ow.btn.textx;
+            div.style.border = "1px solid #e0e0e0";
+            div.style.padding = "0 9px 10px 9px";
+
+            div.onclick = function(e) {
+                _ow.Event.stopPropagation(e);
+            };
+            return div;
+        };
+        pub.setHeight = function(height) {
+            this.popupHeight = height;
+            this.popup.style.height = height + "px";
+        };
+        pub.loadHomepage = function() {
+            //clear popup
+            _ow.Dom.clearChildren(this.popup);
+            this.popup.appendChild(_ow.Template.homepage);
+            _ow.Popup.align(this.currentButton);
+        };
+        pub.loadBookmark = function() {
+            _ow.Dom.clearChildren(this.popup);
+
+            this.popup.appendChild(_ow.Template.bookmark);
+            _ow.Popup.align(this.currentButton);
+        };
+        pub.loadStatus = function() {
+            _ow.Dom.clearChildren(this.popup);
+
+            this.popup.appendChild(_ow.Template.status);
+            _ow.Popup.align(this.currentButton);
+        };
+        pub.loadShare = function() {
+            _ow.Dom.clearChildren(this.popup);
+
+            this.popup.appendChild(_ow.Template.share);
+            _ow.Popup.align(this.currentButton);
+        };
+        pub.loadTags = function() {
+            _ow.Dom.clearChildren(this.popup);
+
+            this.popup.appendChild(_ow.Template.tags);
+            _ow.Popup.align(this.currentButton);
+        };
+
+        pub.loadSignup = function() {
+            window.open(swwwurl, '_blank');
+        };
+
+        pub.loadSignin = function() {
+            window.open(swwwurl, '_blank');
+        };
+
+        pub.loadMyLoginsPage = function() {
+            _ow.Dom.clearChildren(this.popup);
+
+            this.popup.appendChild(_ow.Template.myloginspage);
+            _ow.Popup.align(this.currentButton);
+
+        };
+        return pub;
+    })();
+
+    _ow.genButton = function(currentTag) {
+
+        if (!currentTag)
+            return;
+
+        var ow_button = _ow.E("a");
+
+        _ow.button = ow_button;
+        ow_button.href = "#";
+
+        if (_ow.btn.type == 't')
+        {
+            ow_button.className = 'ow_button';
+        }
+        else
+        {
+            ow_button.className = 'ow_button_border';
+            ow_button.style.backgroundColor = "#" + (_ow.btn.background || "ffffff");
+            ow_button.style.borderColor = "#" + (_ow.btn.border || "000000");
+        }
+
+        var ow_logo = _ow.E("span");
+
+        ow_button.appendChild(ow_logo);
+
+        ow_logo.className = 'ow_logo';
+        ow_logo.style.backgroundColor = "#" + (_ow.btn.logo || "000000");
+        ow_logo.style.margin = "0px";
+
+        var ow_logo_img = _ow.E("img");
+        ow_logo.appendChild(ow_logo_img);
+        ow_logo_img.className = 'ow_logo_img';
+
+        if (_ow.ie6)
+        {
+            ow_logo_img.src = pubwwwurl + "/img/bookmarklet/images/onlywire_logo_small_square.gif";
+        }
+        else
+        {
+            ow_logo_img.src = pubwwwurl + "/img/bookmarklet/images/onlywire_logo_small_square.png";
+        }
+
+        var ow_text = _ow.E("span");
+
+        ow_button.appendChild(ow_text);
+        ow_text.className = 'ow_text';
+        ow_text.style.color = "#" + (_ow.btn.text || "000000");
+        ow_text.style.fontSize = (_ow.btn.fontSize || "12") + "px";
+        ow_text.style.fontFamily = (_ow.btn.fontFamily || "Arial");
+        if (theme != "") {
+            ow_text.appendChild(_ow.T("Share"));
+        } else {
+            ow_text.appendChild(_ow.T("Bookmark & Share"));
+        }
+        ow_button.onclick = function(e) {
+            _ow.Event.stopPropagation(e);
+            _ow.Event.stop(e);
+            _ow.Popup.currentTag = currentTag;
+            _ow.Popup.show(this);
+        };
+
+        if (_ow.btn.mouseover == 't') {
+            ow_button.onmouseover = function() {
+                _ow.Popup.currentTag = currentTag;
+                _ow.Popup.show(this);
+            };
+        }
+
+        return ow_button;
+    };
+
+    _ow.insertButton = function() {
+
+        var stags = document.getElementsByTagName("script");
+        var sarray = [];
+
+        // loop through all the tags in the page, and push to an array
+        // only the ones with className "owbutton", if no className push
+        // the ones with id "owbutton"
+        for (var i = 0; i < stags.length; i++)
+        {
+            // gotta skip all the script tags in the queue
+            // only do this for the last script tag in the stags array
+            var stag = stags[i];
+
+            if (stag.className == "owbutton")
+            {
+                sarray.push(stag);
+            }
+            else if (stag.id == "owbutton")
+            {
+                sarray.push(stag);
+            }
+        }
+
+        var currentTag = sarray[sarray.length - 1];
+
+        if (!currentTag)
+        {
+            return;
+        }
+
+        currentTag.parentNode.insertBefore(_ow.genButton(currentTag), currentTag);
+    };
+
+}
+
+// this will run everytime the script tag is loaded
+_ow.insertButton();
+
+// if the popup exists, and it's a bookmarklet, run the show function
+if (_ow.Popup.popup && (typeof(_bookmarklet) != "undefined"))
+{
+    _ow.Popup.show();
+
+}

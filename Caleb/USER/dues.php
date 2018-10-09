@@ -89,7 +89,7 @@
 
                     
                     <p class="text-center text-info">    
-                    <input id="pay" class="btn btn-secondary agileinfo" onclick="payWithPaystack()" type="submit" value="PAY 5000 NOW" name="pay" />
+                    <input id="pay" class="btn btn-success agileinfo" onclick="payWithPaystack()" type="submit" value="PAY 5000 NOW" name="pay" />
                     </p>
                     </div>
                 </div>

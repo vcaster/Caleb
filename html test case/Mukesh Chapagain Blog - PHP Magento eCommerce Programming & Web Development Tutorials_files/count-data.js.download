@@ -1,0 +1,5 @@
+var DISQUSWIDGETS;
+
+if (typeof DISQUSWIDGETS != 'undefined') {
+    DISQUSWIDGETS.displayCount({"text":{"and":"and","comments":{"zero":"0 Comments","multiple":"{num} Comments","one":"1 Comment"}},"counts":[{"id":"4199 http:\/\/blog.chapagain.com.np\/?p=4199","comments":0},{"id":"4186 http:\/\/blog.chapagain.com.np\/?p=4186","comments":0},{"id":"4188 http:\/\/blog.chapagain.com.np\/?p=4188","comments":0},{"id":"4168 http:\/\/blog.chapagain.com.np\/?p=4168","comments":0}]});
+}

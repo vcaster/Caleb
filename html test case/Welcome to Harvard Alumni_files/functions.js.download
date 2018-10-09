@@ -1,0 +1,473 @@
+
+
+$(document).ready(function() {
+	greyInitRedux();
+	footerTabs();
+	utilDropDownMobile();
+	dropDowns();
+	tabSet();
+	newwin();
+	searchEvents();
+	
+	//Added for ES2
+	aheduNearEvents();
+	
+	//Added for P258
+	aheduP258Handling();
+	
+	//Check cookies
+	checkCookie();
+ });
+
+
+
+/*-------------------------------------------
+ 	Grey Initial Values
+-------------------------------------------*/
+function greyInitRedux() {
+	$("input.filled, textarea.filled").focus(function(e){
+		if(this.value == this.defaultValue)
+		{
+			$(this).removeClass('filled');
+			 this.value= '';
+		}
+		$(this).blur(function(f){ 
+			if(this.value === this.defaultValue) {
+				$(this).addClass('filled');
+				} else if(this.value === "") {
+					this.value = this.defaultValue;
+					$(this).addClass('filled');
+				}
+			});
+	});
+
+}
+
+function footerTabs()
+{
+	var $tabset = $('.f-tabs');
+	
+	$tabset.find('.f-tab-body:gt(0)').hide();
+	$tabset.find('.f-tab-nav li').eq(0).addClass('active').children().append("<span class='triangle' />");
+	
+	$(document).delegate('.f-tab-nav a', 'click', function(event)
+	{
+		
+		$(this).append("<span class='triangle' />").parent().addClass('active');
+		$(this).parent().siblings().removeClass('active');
+		$(this).parent().siblings().children().children().remove('span.triangle');
+
+		var index = $(this).parent().prevAll('*').size();
+		
+		$(this).parents('.f-tabs').find('.f-tab-body').hide();
+		$(this).parents('.f-tabs').find('.f-tab-body').eq(index).show();
+		event.preventDefault();
+
+	});
+}
+
+
+function tabSet()
+{
+	var $tabset = $('.tabs');
+	
+	$tabset.find('.tab-body:gt(0)').hide();
+	$tabset.find('.tab-nav li').eq(0).addClass('active');
+	
+	$(document).delegate('.tab-nav a', 'click', function(event)
+	{
+		
+		$(this).parent().addClass('active');
+		$(this).parent().siblings().removeClass('active');
+
+		var index = $(this).parent().prevAll('*').size();
+		
+		$(this).parents('.tabs').find('.tab-body').hide();
+		$(this).parents('.tabs').find('.tab-body').eq(index).show();
+		event.preventDefault();
+
+	});
+}
+
+// MOBILE NAV
+function utilDropDownMobile()
+{
+	$('a.utility-trigger ').on('click', function()
+	{
+		$('.with-nav-dropdown ul').remove();
+		$("a.search-trigger").removeClass("active");
+		$('form#search').fadeOut("fast");
+		$('.utility-nav').fadeToggle("fast").toggleClass("mobile-active");
+		$(this).toggleClass("active");
+
+	});
+
+
+	$('a.search-trigger ').on('click', function()
+	{
+		$("a.utility-trigger").removeClass("active");
+		$('.utility-nav').fadeOut("fast");
+		$('form#search').fadeToggle("fast").toggleClass("mobile-active");
+		$(this).toggleClass("active");
+		
+	});
+}
+
+
+
+function dropDowns()
+{
+	
+	//LOGIN TOGGLE DROPDOWN 
+	/*
+	$(".login-trigger a").click( function(event)
+	{
+		$(".login-dropdown").fadeToggle("fast");
+		$(this).parent().parent().toggleClass("open");
+		$(".mag-header, .mobile-active").fadeOut("fast");
+		$(".top-level").removeClass("open");
+		$("form#search, .utility-nav").removeClass("mobile-active");
+		$("a.utility-trigger, a.search-trigger").removeClass("active");
+		event.preventDefault();
+
+	});
+
+	//LOGIN CLOSE DROPDOWN 
+	$(".login .close").click( function(event)
+	{
+		
+		$(".login-dropdown").fadeToggle("fast");
+		$(this).parent().parent().parent().parent(".login").toggleClass("open");
+		event.preventDefault();
+
+	});
+	*/
+	
+	//MAG TOGGLE DROPDOWN
+	$('.mag-trigger .top-level').click( function(event)
+	{
+		$(".mag-header").fadeToggle("fast");
+		$(this).toggleClass("open");
+		$(".login").removeClass("open");
+		$(".login-dropdown, .mobile-active").fadeOut("fast");
+		$("form#search, .utility-nav").removeClass("mobile-active");
+		$("a.utility-trigger, a.search-trigger").removeClass("active");
+		event.preventDefault();
+		
+	});
+
+	//MAG CLOSE DROPDOWN
+	$('.mag-trigger .close').click( function(event)
+	{
+		
+		$(".mag-header").fadeOut("fast");
+		$(this).parent().parent().children().removeClass("open");
+		event.preventDefault();
+		
+	});
+
+
+	$('html').click(function() {
+		$('.login-dropdown, .mag-header').hide();
+		$('.login, .top-level').removeClass('open');
+	});
+
+	$('.login, .mag-trigger').click(function (e){
+	    e.stopPropagation();
+	});
+
+
+
+	//SCHOOLS LIST TOGGLER
+	$('.school-list-toggler').click( function(event)
+	{
+		
+		$(".school-list-toggle").fadeToggle("fast");
+		$(this).toggleClass("open");
+		event.preventDefault();
+
+	});
+}
+
+function isTouchDevice(){
+  return (typeof(window.ontouchstart) != 'undefined') ? true : false;
+}
+
+function isMobileDevice() {
+	if ( navigator.userAgent.match(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i) ) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+if (isTouchDevice) { $("body").addClass("isTouchEnabled")}
+
+/**
+ * == Move Main
+ * The main column on the homepage needs to move down to accomodate the homepage carousel. 
+ */
+
+$(window).on("load", function() { 
+
+	if($('.home .main').size()){
+		var carouselHeight = $('.spotlight').height();
+		var headerHeight = $('.home div.carousel').height();
+		var mainPosition =  headerHeight - carouselHeight;
+		$('.home .main').css('padding-top',(mainPosition+50));
+	}
+
+
+ });
+
+
+/**
+ * function to open external links in new window
+ */
+function newwin() {
+	var hostname = window.location.hostname;
+	hostname = hostname.replace("www.","").toLowerCase();
+	var ace_hostname1='community.alumni.harvard.edu';
+	var ace_hostname2='huevents.harvard.edu';
+	
+	$('a').each(function(index) {
+    var $thisLink = $(this);
+		if ( $thisLink.attr("href") ) {
+			var href = $thisLink.attr("href").toLowerCase();			
+			if ( (href.indexOf("http://")!=-1 || href.indexOf("https://")!=-1 ) && href.indexOf(hostname)==-1 && href.indexOf(ace_hostname1)==-1 && href.indexOf(ace_hostname2)==-1) {
+				/* Aug 27, 2012, not to open in new window per Perry
+				$thisLink.attr({
+					'target': '_blank'
+				});
+				*/
+				$thisLink.addClass("external");
+			} 
+		}
+  });	
+	
+};
+
+/**
+*/
+function searchEvents() {
+	//search button clicked
+
+	$('#search .search-btn').click( function(event)
+	{
+		var query = $("#searchtext").val();
+		if ( query.toLowerCase()=='search' ) {
+			$("#searchtext").val('');
+		}
+		//event.preventDefault();
+	});
+	
+	$('#inner_search_form .search-btn').click( function(event)
+	{
+		var query = $("#edit-query").val();
+		if ( query.toLowerCase()=='search' ) {
+			$("#edit-query").val('');
+		}
+	});
+}
+
+/**
+ * Added for ES2
+ */
+function aheduNearEvents() {
+	// Load dialog on click
+	if ( $('#my_location_marker .basic').size() ) {
+		$('#my_location_marker .basic').click(function (e) {
+			aheduGetLocation();
+			$('#basic-modal-content').modal();
+	
+			e.preventDefault();
+			return false;
+		});
+	}
+
+	if ( $("#loc-choose-loc input[type=radio]").size() ) {
+		$("#loc-choose-loc input[type=radio]").change( function () {
+			if ( $("#loc-choose-loc input[type=radio]:checked").val() == 'current' ) { //found location
+				$("#loc-enter-loc").hide();
+			}
+			else {
+				$("#loc-enter-loc").show();
+			}
+		});
+	}
+}
+
+function aheduGetLocation() {
+	if ( isMobileDevice() ) {
+		if (navigator.geolocation) { //for Touch device, use HTML5 geolocation if avaiable
+			navigator.geolocation.getCurrentPosition(aheduSetPosition, aheduHandleError);
+		}
+		/*
+		 It is decided to not fall back to use get location by IP for touch Device.
+		else{
+			aheduGetLoctionbyIP();
+		} */ 
+	}
+	else { 
+		aheduGetLoctionbyIP();
+	}
+}
+
+function aheduSetPosition(position) {
+	if ( position.coords.latitude && position.coords.longitude ) { 
+		var request = $.ajax({
+				type: 'POST',
+				url: '/ajax/get_address',
+				data: 'lat='+position.coords.latitude+'&lng='+position.coords.longitude,
+				dataType: 'json',
+				success: function(data)
+				{	
+					aheduSetLocationForm(true, data);
+				}
+			});
+		
+		request.fail(function(jqXHR, textStatus) {
+			aheduSetLocationForm(false, ''); //No Locaton found
+		});
+	}
+}
+	
+function aheduHandleError(error) {
+	aheduSetLocationForm(false, ''); //No Locaton found
+}
+
+function aheduGetLoctionbyIP() {
+	var request = $.ajax({
+				type: 'POST',
+				url: '/geoip/get_geo_from_ip.php',
+				data: '',
+				dataType: 'json',
+				success: function(data)
+				{	
+					aheduSetLocationForm(true, data);
+				}
+			});
+		
+	request.fail(function(jqXHR, textStatus) {
+		/* It is decided to not fall back to HTML5 method when get location IP approach fails.
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(aheduSetPosition, aheduHandleError);
+		}
+		else{ */
+			aheduSetLocationForm(false, ''); //No Locaton found
+		//}
+	});
+}
+
+function aheduSetLocationForm(withLoc, locData) {
+	if ( withLoc ) {
+		var loc = '';
+		if ( locData.country_long=='' ) {
+			loc = locData.city + ', ' + locData.state_short;
+			$('#found-state').val(locData.state_short);
+			$('#found-country').val(locData.country_short);
+		}
+		else {
+			loc = locData.city + ', ' + locData.state_long + ', ' + locData.country_long;
+			$('#found-state').val(locData.state_long);
+			$('#found-country').val(locData.country_long);
+		}
+		$('#found-city').val(locData.city);
+		$('#found-lat').val(locData.lat);
+		$('#found-lng').val(locData.lng);
+		$('#found-location-form .title').html('Your current location<div class="loc">' + loc + '</div>');	
+		$('#found-location-form').show();
+		$('#loc-enter-loc').hide();
+	}
+	else {
+		$('#found-location-form .title').html('Your location cannot be determined. Please enter a location:');
+		$('#found-location-form').show();
+		$('#loc-choose-loc').hide();
+		$('#radio_use_current_location').removeAttr('checked');
+		$('#radio_use_new_location').attr('checked', 'checked');
+}
+	
+	$('#location-form').show();
+}
+
+
+function aheduP258Handling() {
+	//Add proper 'active' class to sorting options
+	if ( $(".sorting-options").length > 0 ) {
+		$(".sorting-options a.active").removeClass("active");
+		
+		var orderby = aheduGetQuerystring('orderby');
+		if ( orderby!='' && orderby=='goal' ) {
+			var direction = aheduGetQuerystring('direction');
+			if ( direction!='' && direction=='ASC' ) {
+				$(".sorting-options a.low2high").addClass("active");
+			}
+			else {
+				$(".sorting-options a.high2low").addClass("active");
+			}
+		}
+		else {
+			$(".sorting-options a.recency").addClass("active");
+		}
+	}
+}
+
+function aheduGetQuerystring(key, default_)
+{
+  if (default_==null) default_=""; 
+  key = key.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+  var regex = new RegExp("[\\?&]"+key+"=([^&#]*)");
+  var qs = regex.exec(window.location.href);
+  if(qs == null)
+    return default_;
+  else
+    return qs[1];
+}
+
+function getCookie(c_name) {
+	var i,x,y,ARRcookies=document.cookie.split(";");
+	for (i=0;i<ARRcookies.length;i++) {
+		x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
+		y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+		x=x.replace(/^\s+|\s+$/g,"");
+		if (x==c_name) {
+			return unescape(y);
+		}
+  }
+}
+
+function checkCookie() {
+	var loggedIn=getCookie("aceLoggedIn");
+	//loggedIn = "true";
+	if (loggedIn!=null && loggedIn=="true") {
+		$('.community-user-only').addClass('loggedin');
+		$('.public-user-only').addClass('loggedin');
+		$('#campaign-link').addClass('loggedin');
+		$('a.community-link').each( function(){
+				if ( $(this).data('community-url')!==undefined && $(this).data('community-url')!='' ){
+					$(this).attr('href', $(this).data('community-url')) }
+				else if ( $(this).data('community-user-url') !== undefined && $(this).data('community-user-url')!='' ){
+					$(this).attr('href', $(this).data('community-user-url')) }
+	  });
+	}
+	else {
+		$('.community-user-only').removeClass('loggedin');
+		$('.public-user-only').removeClass('loggedin');
+		$('#campaign-link').removeClass('loggedin');
+	}
+}
+
+function openNav() {
+	$('#offcanvas-menu').addClass( 'is-open' );
+	$('#offcanvas-overlay').addClass( 'is-open' );
+}
+
+function closeNav() {
+	$('#offcanvas-menu').removeClass( 'is-open' );
+	$('#offcanvas-overlay').removeClass( 'is-open' );
+}
+
+$(window).resize(function() {
+	closeNav();
+});
