@@ -1,3 +1,4 @@
+<div class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-left" id="cbp-spmenu-s1">
 <!--left-fixed -navigation-->
 <aside class="sidebar-left">
   <nav class="navbar navbar-inverse">

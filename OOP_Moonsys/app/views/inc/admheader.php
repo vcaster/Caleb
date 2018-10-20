@@ -40,6 +40,15 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 <script src="<?php echo URLROOT ?>/js/Chart.js"></script>
 <!-- //chart -->
 
+<!-- MDBootstrap -->
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">-->
+    <!-- Bootstrap core CSS -->
+    <link href="<?php echo URLROOT ?>/css/bootstrap(3).css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="<?php echo URLROOT ?>/css/mdb.min.css" rel="stylesheet">
+    <!-- Your custom styles (optional) -->
+    <link href="<?php echo URLROOT ?>/css/style(3).css" rel="stylesheet">
+
 <!-- Metis Menu -->
 <script src="<?php echo URLROOT ?>/js/metisMenu.min.js"></script>
 <script src="<?php echo URLROOT ?>/js/custom.js"></script>
@@ -110,6 +119,5 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 </head>
 <body class="cbp-spmenu-push">
 	<div class="main-content">
-	<div class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-left" id="cbp-spmenu-s1">
 <?php require 'admsidebar.php'; ?>
 <?php require 'admheaderinc.php'; ?>

@@ -1,7 +1,7 @@
 
 		<!-- header-starts -->
 		<div class="sticky-header header-section ">
-			<div class="header-left">
+			<div class="header-left ">
 				<!--toggle button start-->
 				<button id="showLeftPush"><i class="fa fa-bars"></i></button>
 				<!--toggle button end-->
