@@ -8,7 +8,7 @@
 <html lang="zxx">
 
 <head>
-    <title>Replenish HR Management Category Bootstrap responsive Web Template | Home :: w3layouts</title>
+    <title>Replenish HR Management Category Bootstrap responsive Web Template | How :: w3layouts</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
     <meta name="keywords" content="Replenish a Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template,
@@ -23,7 +23,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         }
     </script>
     <link href="<?php echo URLROOT ?>/css/bootstrap.css" rel='stylesheet' type='text/css' />
-    <link href="<?php echo URLROOT ?>/css/zoomslider.css" rel='stylesheet' type='text/css' />
     <link href="<?php echo URLROOT ?>/css/style6.css" rel='stylesheet' type='text/css' />
     <link href="<?php echo URLROOT ?>/css/style.css" rel='stylesheet' type='text/css' />
     <link href="<?php echo URLROOT ?>/css/fontawesome-all.css" rel="stylesheet">
@@ -33,6 +32,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
 <body>
     <!-- banner-inner -->
-    <div id="demo-1" data-zs-src='["<?php echo URLROOT ?>/images/1.jpg", "<?php echo URLROOT ?>/images/2.jpg","<?php echo URLROOT ?>/images/3.jpg", "<?php echo URLROOT ?>/images/4.jpg"]' data-zs-overlay="dots">
-        <div class="demo-inner-content">
-          <?php require 'headerinc.php'; ?>
+    <div id="demo-1" class="page-content">
+        <div class="dotts">
+            <?php require 'headerinc.php'; ?>

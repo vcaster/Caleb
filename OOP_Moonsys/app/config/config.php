@@ -3,11 +3,12 @@
   define('DB_HOST', 'localhost');
   define('DB_USER', 'root');
   define('DB_PASS', '');
-  define('DB_NAME', 'oop');
+  define('DB_NAME', 'moonsys');
 
   // App Root
   define('APPROOT', dirname(dirname(__FILE__)));
   // URL Root
-  define('URLROOT', 'http://localhost/OOP_prod');
+  define('URLROOT', 'http://localhost/OOP_Moonsys');
   // Site Name
-  define('SITENAME', 'OOP_prod');
+  define('SITENAME', 'Moonsys');
+  define('SITEMOTTO', 'IT solutions');
