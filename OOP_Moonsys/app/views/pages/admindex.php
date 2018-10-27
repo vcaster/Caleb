@@ -256,11 +256,78 @@
 
              </div><!--/tab-pane-->
              <div class="tab-pane" id="payinfo">
+							 <div class="form-row">
+								<!-- Grid column -->
+									<div class="col-md-4">
+											<!-- Material input -->
+											<div class="md-form form-group">
 
-               <h2></h2>
+											</div>
+									</div>
+									<!-- Grid column -->
+									<!-- Grid column -->
+									<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 
+									 <div class="box-part text-center">
+
+											 <i class="fa fa-money fa-3x" aria-hidden="true"></i>
+
+										 <div class="title">
+											 <h4>Gross Pay</h4>
+										 </div>
+
+										 <div class="text">
+											 <span>$5654345654</span>
+										 </div>
+
+										</div>
+								 </div>
+										<!-- Grid column -->
+
+							</div><hr><br>
+
+							 <h2>Pay Log</h2>
                <hr>
                   <form class="form" action="##" method="post" id="registrationForm">
+
+										<table class="table table-hover">
+										  <thead class="thead-inverse">
+										    <tr>
+										      <th>S/N</th>
+													<th>Employee ID</th>
+										      <th>Reason</th>
+										      <th>Amount</th>
+													<th>Date</th>
+										      <th>Transaction ID</th>
+										    </tr>
+										  </thead>
+										  <tbody>
+										    <tr>
+										      <th scope="row">1</th>
+										      <td>EZEOL15</td>
+										      <td>Salary</td>
+										      <td>₦40000</td>
+													<td>2018-01-02</td>
+													<td>353</td>
+										    </tr>
+												<tr>
+										      <th scope="row">2</th>
+										      <td>GBJOL15</td>
+										      <td>Salary</td>
+										      <td>₦10000</td>
+													<td>2018-01-02</td>
+													<td>313</td>
+										    </tr>
+												<tr>
+										      <th scope="row">3</th>
+										      <td>FEMOL15</td>
+										      <td>Salary</td>
+										      <td>₦30000</td>
+													<td>2018-01-02</td>
+													<td>153</td>
+										    </tr>
+										  </tbody>
+										</table>
 
               	</form>
 

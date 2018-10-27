@@ -46,4 +46,9 @@
     public function admindex(){
       $this->view("pages/admindex");
     }
+    
+    public function test(){
+      $this->view("pages/test");
+    }
+
   }

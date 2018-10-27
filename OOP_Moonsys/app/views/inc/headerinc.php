@@ -7,11 +7,11 @@
                     <span>Welcome Back!</span>
                 </div>
                 <div class="col-md-3 sign-btn">
-                    <a href="#" data-toggle="modal" data-target="#exampleModalCenter">
+                    <a  href="<?php echo URLROOT ?>/users/login">
                             <i class="fas fa-lock"></i> Sign In</a>
                 </div>
                 <div class="col-md-3 sign-btn">
-                    <a href="#" data-toggle="modal" data-target="#exampleModalCenter2">
+                    <a  href="<?php echo URLROOT ?>/users/register">
                             <i class="far fa-user"></i> Register</a>
                 </div>
                 <div class="search col-md-2">
@@ -48,27 +48,27 @@
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-lg-auto text-center">
-                    <li class="nav-item">
+                    <li class="nav-item <?php echo ($_SERVER['REQUEST_URI'] == '/OOP_Moonsys/pages/index') ? 'active' : ''; ?>">
                         <a class="nav-link" href="<?php echo URLROOT ?>/pages/index">Home
                             <span class="sr-only">(current)</span>
                         </a>
                     </li>
-                    <li class="nav-item active">
+                    <li class="nav-item  <?php echo ($_SERVER['REQUEST_URI'] == '/OOP_Moonsys/pages/how') ? 'active' : ''; ?>">
                         <a class="nav-link" href="<?php echo URLROOT ?>/pages/how">How it works</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item <?php echo ($_SERVER['REQUEST_URI'] == '/OOP_Moonsys/pages/employer_single') ? 'active' : ''; ?>">
                         <a class="nav-link" href="<?php echo URLROOT ?>/pages/employer_single"><?php echo SITENAME ?></a>
                     </li>
 
-                    <li class="nav-item">
+                    <li class="nav-item <?php echo ($_SERVER['REQUEST_URI'] == '/OOP_Moonsys/pages/services') ? 'active' : ''; ?>">
                         <a class="nav-link" href="<?php echo URLROOT ?>/pages/services">Services</a>
                     </li>
 
-                    <li class="nav-item">
+                    <li class="nav-item <?php echo ($_SERVER['REQUEST_URI'] == '/OOP_Moonsys/pages/contact') ? 'active' : ''; ?>">
                         <a class="nav-link" href="<?php echo URLROOT ?>/pages/contact">Contact</a>
                     </li>
 
-                    <li class="nav-item">
+                    <li class="nav-item <?php echo ($_SERVER['REQUEST_URI'] == '/OOP_Moonsys/pages/about') ? 'active' : ''; ?>">
                         <a class="nav-link" href="<?php echo URLROOT ?>/pages/about">About</a>
                     </li>
 
